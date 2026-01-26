@@ -1,0 +1,185 @@
+name: Phase Audit Check
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  check-audits:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check phase audit files exist
+        run: |
+          echo "Checking phase audit compliance..."
+
+          # Extract completed phases from implementation-plan.md
+          # Looks for patterns like "## PHASE N — ... — COMPLETE"
+          COMPLETED_PHASES=$(grep -oP '## PHASE \K\d+(?=.*COMPLETE)' implementation-plan.md | sort -n)
+
+          MISSING=""
+          for PHASE in $COMPLETED_PHASES; do
+            # Pad single digits with leading zero
+            PADDED=$(printf "%02d" $PHASE)
+            AUDIT_FILE="docs/audits/phase-${PADDED}-audit.md"
+
+            if [ ! -f "$AUDIT_FILE" ]; then
+              MISSING="$MISSING\n  - Phase $PHASE: $AUDIT_FILE"
+            else
+              # Verify the audit file contains PASS verdict
+              if ! grep -q "PASS" "$AUDIT_FILE"; then
+                MISSING="$MISSING\n  - Phase $PHASE: $AUDIT_FILE (no PASS verdict)"
+              fi
+            fi
+          done
+
+          if [ -n "$MISSING" ]; then
+            echo "ERROR: Missing or invalid audit files:"
+            echo -e "$MISSING"
+            echo ""
+            echo "Every phase marked COMPLETE must have a corresponding audit file"
+            echo "in docs/audits/phase-NN-audit.md with a PASS verdict."
+            exit 1
+          fi
+
+          echo "All completed phases have valid audit files."
+
+      - name: Validate audit file format
+        run: |
+          echo "Validating audit file format..."
+
+          for AUDIT in docs/audits/phase-*-audit.md; do
+            if [ -f "$AUDIT" ]; then
+              # Check required fields exist
+              if ! grep -q "| Phase |" "$AUDIT"; then
+                echo "ERROR: $AUDIT missing Phase field"
+                exit 1
+              fi
+              if ! grep -q "| Git SHA |" "$AUDIT"; then
+                echo "ERROR: $AUDIT missing Git SHA field"
+                exit 1
+              fi
+              if ! grep -q "| Verdict |" "$AUDIT"; then
+                echo "ERROR: $AUDIT missing Verdict field"
+                exit 1
+              fi
+              if ! grep -q "## Validation Scripts" "$AUDIT"; then
+                echo "ERROR: $AUDIT missing Validation Scripts section"
+                exit 1
+              fi
+              if ! grep -q "## ADR" "$AUDIT"; then
+                echo "ERROR: $AUDIT missing ADR section"
+                exit 1
+              fi
+            fi
+          done
+
+          echo "All audit files have valid format."
+
+      - name: Check invariants are append-only
+        run: |
+          echo "Checking invariants append-only constraint..."
+
+          # Extract invariant numbers from current branch
+          CURRENT_INVARIANTS=$(grep -oP '^## \K\d+(?=\.)' docs/invariants.md | sort -n)
+
+          # For PRs, compare against base branch
+          # For pushes to main, compare against parent commit
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            git fetch origin ${{ github.base_ref }} --depth=1
+            BASE_INVARIANTS=$(git show origin/${{ github.base_ref }}:docs/invariants.md 2>/dev/null | grep -oP '^## \K\d+(?=\.)' | sort -n || echo "")
+          else
+            BASE_INVARIANTS=$(git show HEAD~1:docs/invariants.md 2>/dev/null | grep -oP '^## \K\d+(?=\.)' | sort -n || echo "")
+          fi
+
+          # Check that no invariant was deleted
+          DELETED=""
+          for INV in $BASE_INVARIANTS; do
+            if ! echo "$CURRENT_INVARIANTS" | grep -q "^${INV}$"; then
+              DELETED="$DELETED\n  - Invariant $INV"
+            fi
+          done
+
+          if [ -n "$DELETED" ]; then
+            echo "ERROR: Invariants were deleted (append-only violation):"
+            echo -e "$DELETED"
+            echo ""
+            echo "Invariants are immutable. They may only be added, never removed."
+            echo "See docs/invariants.md for the system's non-negotiable constraints."
+            exit 1
+          fi
+
+          echo "Invariants append-only constraint satisfied."
+
+      - name: Validate implementation plan consistency
+        run: |
+          echo "Checking implementation plan consistency..."
+
+          # Extract phase statuses
+          # Pattern: "## PHASE N — ... — STATUS"
+          COMPLETE_PHASES=$(grep -oP '## PHASE \K\d+(?=.*COMPLETE)' implementation-plan.md | sort -n || echo "")
+          IN_PROGRESS_PHASES=$(grep -oP '## PHASE \K\d+(?=.*IN.PROGRESS)' implementation-plan.md | sort -n || echo "")
+
+          # Check for phases marked both COMPLETE and IN_PROGRESS
+          for PHASE in $COMPLETE_PHASES; do
+            if echo "$IN_PROGRESS_PHASES" | grep -q "^${PHASE}$"; then
+              echo "ERROR: Phase $PHASE is marked both COMPLETE and IN_PROGRESS"
+              exit 1
+            fi
+          done
+
+          # Check that completed phases are sequential (no gaps)
+          if [ -n "$COMPLETE_PHASES" ]; then
+            PREV=0
+            for PHASE in $COMPLETE_PHASES; do
+              EXPECTED=$((PREV + 1))
+              if [ "$PHASE" -ne "$EXPECTED" ]; then
+                echo "ERROR: Phase gap detected. Expected Phase $EXPECTED but found Phase $PHASE"
+                echo "Completed phases must be sequential with no gaps."
+                exit 1
+              fi
+              PREV=$PHASE
+            done
+          fi
+
+          # Check that IN_PROGRESS phases come after COMPLETE phases
+          if [ -n "$COMPLETE_PHASES" ] && [ -n "$IN_PROGRESS_PHASES" ]; then
+            MAX_COMPLETE=$(echo "$COMPLETE_PHASES" | tail -1)
+            for PHASE in $IN_PROGRESS_PHASES; do
+              if [ "$PHASE" -le "$MAX_COMPLETE" ]; then
+                echo "ERROR: Phase $PHASE is IN_PROGRESS but Phase $MAX_COMPLETE is already COMPLETE"
+                exit 1
+              fi
+            done
+          fi
+
+          echo "Implementation plan consistency verified."
+
+      - name: Check sacred boundary (src/ does not import ai/runtime/)
+        run: |
+          echo "Checking sacred boundary constraint..."
+
+          # src/ must never import from ai/runtime/
+          # This boundary ensures infrastructure remains agent-agnostic
+          VIOLATIONS=""
+
+          if grep -r "from ai\.runtime" src/ --include="*.py" 2>/dev/null; then
+            VIOLATIONS="found"
+          fi
+
+          if grep -r "import ai\.runtime" src/ --include="*.py" 2>/dev/null; then
+            VIOLATIONS="found"
+          fi
+
+          if [ -n "$VIOLATIONS" ]; then
+            echo ""
+            echo "ERROR: Sacred boundary violation detected."
+            echo "src/ must never import from ai/runtime/"
+            echo "Infrastructure code must not depend on agent contracts."
+            exit 1
+          fi
+
+          echo "Sacred boundary intact."
