@@ -31,7 +31,6 @@
 ## Notes
 
 Audit file created retroactively during governance hardening (Phase 15+).
-Validation script created in commit 672a28f.
 
 ## Auditor
 

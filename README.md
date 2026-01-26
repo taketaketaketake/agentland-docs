@@ -1,6 +1,6 @@
-# agentland-docs
+# Spec-Driven Development Template
 
-Documentation templates for **spec-driven development** of AI-native management systems.
+Documentation templates for **spec-driven development** of AI-native systems.
 
 ## What This Is
 
@@ -9,6 +9,8 @@ This repository contains structured documentation that serves as:
 - **Templates** for building AI-native control planes
 - **Contracts** that define how LLMs should reason about systems
 - **Governance structures** for agent-based architectures
+
+Particularly useful for teams building agentic systems where governance, auditability, and clear boundaries matter.
 
 ## Repository Structure
 
@@ -22,7 +24,7 @@ docs/           # Authoritative documentation templates
   decisions/    # ADR templates
 
 skills/         # LLM-enforced procedures
-  claude/       # Claude-specific skills
+  llm/          # LLM-specific skills
 
 ai/             # AI context (design-time and runtime)
   design-time/  # Static reasoning context

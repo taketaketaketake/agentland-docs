@@ -276,7 +276,7 @@ scripts/validate_schema.py
 - No FK from directives.role to agent_roles (plain TEXT)
 - No cached/global engine state (explicit passing)
 - No cleanup in validation (auditability over cleanliness)
-- Separate `agentland` database (not Temporal's)
+- Separate application database (not Temporal's)
 
 ---
 
@@ -919,7 +919,7 @@ This ensures:
 
 - `get_llm_provider()` chooses provider based on `LLM_PROVIDER` env var
 - `LLM_PROVIDER=noop` (default)
-- `LLM_PROVIDER=anthropic` (future, not implemented in Phase 9)
+- `LLM_PROVIDER=<provider>` (future, not implemented in Phase 9)
 - Raises `LLMProviderError` with `error_type = "misconfigured"` for unknown provider
 
 ### 9.5 Usage Normalization
@@ -1183,7 +1183,7 @@ This phase produces documentation only:
 - [x] `docs/contracts.md` — Interface completeness for all 8 layers
 - [x] `docs/glossary/markdown-glossary.md` — Updated with routing rules
 - [x] Warning headers added to stabilization docs ("NOT an implementation plan")
-- [x] `skills/claude/phase-audit.md` — "Invalid Substitutes" section added
+- [x] `skills/llm/phase-audit.md` — "Invalid Substitutes" section added
 
 ### What Was Produced
 
@@ -1197,7 +1197,7 @@ docs/contracts.md       # 8 interfaces marked COMPLETE with bounded enums
 **Files updated:**
 ```
 docs/glossary/markdown-glossary.md  # Routing rules for new doc types
-skills/claude/phase-audit.md       # Enforcement guardrails
+skills/llm/phase-audit.md       # Enforcement guardrails
 ```
 
 ### Constraint
@@ -1220,51 +1220,49 @@ Future phases can add capabilities knowing:
 
 ---
 
-## PHASE 11 — Real LLM Provider (Anthropic) — COMPLETE
+## PHASE 11 — Real LLM Provider — COMPLETE
 
 ### Goal
 
-Replace `NoOpLLMProvider` with a working Anthropic Claude provider.
+Replace `NoOpLLMProvider` with a working LLM provider implementation.
 
 ### Status: COMPLETE
 
-Completed 2026-01-25.
-
 ### Prerequisites
 
-- Anthropic API key configured in environment
-- `anthropic` Python SDK added to dependencies
+- LLM provider API key configured in environment
+- Provider SDK added to dependencies
 
 ### What Was Built
 
 **Files created:**
 ```
-src/infra/llm/anthropic.py    # AnthropicLLMProvider implementation
+src/infra/llm/<provider>.py    # LLMProvider implementation
 ```
 
 **Files updated:**
 ```
-src/infra/llm/config.py       # Add anthropic provider selection
+src/infra/llm/config.py       # Add provider selection
 src/infra/llm/__init__.py     # Export new provider
-pyproject.toml                # Add anthropic dependency
-.env.example                  # Add ANTHROPIC_API_KEY placeholder
+pyproject.toml                # Add provider dependency
+.env.example                  # Add API key placeholder
 docs/stubs.md                 # Mark NoOpLLMProvider as replaced
 ```
 
 ### Implementation
 
-1. Added `anthropic>=0.18.0` to pyproject.toml
-2. Created `AnthropicLLMProvider` implementing `LLMProvider` Protocol:
-   - `name = "anthropic"`
-   - `.complete()` calls Claude API via SDK
+1. Add provider SDK to pyproject.toml
+2. Create provider class implementing `LLMProvider` Protocol:
+   - `name = "<provider>"`
+   - `.complete()` calls LLM API via SDK
    - Map SDK response to `LLMResponse`
    - Map SDK errors to `LLMProviderError` with bounded error_type
-3. Update `get_llm_provider()` to return `AnthropicLLMProvider` when `LLM_PROVIDER=anthropic`
-4. Update `.env.example` with `ANTHROPIC_API_KEY` placeholder
+3. Update `get_llm_provider()` to return provider when `LLM_PROVIDER=<provider>`
+4. Update `.env.example` with API key placeholder
 
 ### Exit Criteria (verified)
 
-- [x] `AnthropicLLMProvider` passes `scripts/validate_llm.py` (9/9 tests)
+- [x] Provider passes `scripts/validate_llm.py` (9/9 tests)
 - [x] LLM calls succeed with valid API key (provider instantiates, ready to call)
 - [x] LLM calls fail gracefully with missing/invalid key (error_type="misconfigured")
 - [x] Usage/cost tracking populates correctly (pricing table + normalize_usage)
@@ -1533,7 +1531,7 @@ All stubs replaced with real implementations:
 
 | Stub | Replacement | Phase |
 |------|-------------|-------|
-| NoOpLLMProvider | AnthropicLLMProvider | 11 |
+| NoOpLLMProvider | RealLLMProvider | 11 |
 | NoOpMemoryReader | PostgresMemoryReader | 12 |
 | Artifact Store (local) | R2ObjectStore | 13 |
 | Vector Memory (no embed) | OpenAIEmbeddingProvider | 14 |

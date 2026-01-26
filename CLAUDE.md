@@ -103,7 +103,7 @@ Before ANY of the following:
 
 Claude MUST:
 
-1. **Invoke the `phase_audit` skill** (`skills/claude/phase-audit.md`)
+1. **Invoke the `phase_audit` skill** (`skills/llm/phase-audit.md`)
 2. **Provide all required inputs:**
    - `phase_number`: The phase being completed
    - `phase_description`: What the phase accomplished

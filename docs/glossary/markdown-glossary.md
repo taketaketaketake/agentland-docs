@@ -446,7 +446,7 @@ Machine-verifiable record that a phase passed its audit before being marked COMP
 **What Does NOT Go Inside**
 - Implementation details
 - Code
-- Full audit procedure (that's in skills/claude/phase-audit.md)
+- Full audit procedure (that's in skills/llm/phase-audit.md)
 
 **Audience**
 CI automation and humans verifying compliance.
@@ -881,7 +881,7 @@ Rare. Skills define system behavior and must be stable.
 - An existing enforcement mechanism changes
 - A skill is promoted from advisory to mandatory
 
-### skills/claude/codebase-health.md
+### skills/llm/codebase-health.md
 
 **Purpose**
 Defines the procedure for performing structured codebase health assessments.
@@ -910,7 +910,7 @@ Rare.
 
 ---
 
-### skills/claude/phase-audit.md
+### skills/llm/phase-audit.md
 
 **Purpose**
 Defines the mandatory audit procedure that must be passed before any phase may be marked COMPLETE.
