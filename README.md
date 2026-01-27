@@ -12,6 +12,72 @@ This repository contains structured documentation that serves as:
 
 Particularly useful for teams building agentic systems where governance, auditability, and clear boundaries matter.
 
+## Documentation Relationship Map
+
+```
+                                    ┌─────────────────────────┐
+                                    │  markdown-glossary.md   │
+                                    │  (Central Hub)          │
+                                    │  Authoritative source   │
+                                    │  for update triggers    │
+                                    └───────────┬─────────────┘
+                                                │
+                    ┌───────────────────────────┼──────────────────────────┐
+                    │                           │                          │
+        ┌───────────▼───────────┐   ┌───────────▼──────────┐   ┌──────────▼─────────┐
+        │     README.md         │   │   CLAUDE.md          │   │ implementation-    │
+        │                       │   │                      │   │ plan.md            │
+        │  - Entry point        │   │  - AI instructions   │   │                    │
+        │  - Overview           │   │  - Phase protocol    │   │  - Phase tracking  │
+        └───────────────────────┘   └──────────┬───────────┘   └─────────┬──────────┘
+                                               │                          │
+                                    ┌──────────▼──────────┐              │
+                                    │   vision.md         │              │
+                                    │   architecture.md   │              │
+                                    │   invariants.md     │              │
+                                    │   models.md         │              │
+                                    └─────────────────────┘              │
+                                                                         │
+        ┌────────────────────────────────────────────────────────────────┘
+        │
+        │         ┌─────────────────────────┐           ┌──────────────────────────┐
+        └────────►│  phase-audit.md         │──────────►│  phase-NN-audit.md      │
+                  │  (Skill/Enforcement)    │  creates  │  (Generated reports)     │
+                  │                         │           │                          │
+                  └────┬────────────────────┘           └──────────────────────────┘
+                       │
+                       │ validates
+                       │
+                  ┌────▼────────────────────┐
+                  │  adr-template.md        │
+                  │                         │
+                  └─────────────────────────┘
+                       │
+                       │ used by
+                       │
+                  ┌────▼────────────────────┐
+                  │  adr-001-*.md           │
+                  │  (Actual ADRs)          │
+                  └─────────────────────────┘
+
+
+        ┌─────────────────────────┐           ┌──────────────────────────┐
+        │  codebase-health.md     │──────────►│  health-log.md          │
+        │  (Skill/Monitoring)     │  appends  │  (Health reports)        │
+        │                         │           │                          │
+        └─────────────────────────┘           └──────────────────────────┘
+
+
+        ┌─────────────────────────┐
+        │  stubs.md               │
+        │  artifacts.md           │◄──────── Referenced by phase-audit.md
+        │  contracts.md           │          (Retrospective checks)
+        │  glossary.md            │
+        └─────────────────────────┘
+```
+
+See [docs/markdown-map.md](docs/markdown-map.md) for the full relationship analysis.
+
 ## Repository Structure
 
 ```
