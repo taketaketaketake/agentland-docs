@@ -81,20 +81,49 @@ See [docs/markdown-map.md](docs/markdown-map.md) for the full relationship analy
 ## Repository Structure
 
 ```
-docs/           # Authoritative documentation templates
-  architecture.md
-  invariants.md
-  models.md
-  vision.md
-  glossary/     # Term and file contracts
-  decisions/    # ADR templates
-
-skills/         # LLM-enforced procedures
-  llm/          # LLM-specific skills
-
-ai/             # AI context (design-time and runtime)
-  design-time/  # Static reasoning context
-  runtime/      # Operational contracts
+.
+├── .claude/                    # Claude Code Editor configuration
+│   └── settings.local.json     # Local Claude settings
+│
+├── .github/                    # GitHub-specific configurations
+│   └── workflows/              # GitHub Actions workflows
+│       └── audit-check.yml     # Automated audit validation
+│
+├── CLAUDE.md                   # AI assistant persistent context and rules
+├── README.md                   # This file - repository overview
+├── implementation-plan.md      # Phase tracking and implementation roadmap
+│
+├── docs/                       # Authoritative documentation templates
+│   ├── architecture.md         # System architecture specification
+│   ├── artifacts.md            # Artifact definitions and contracts
+│   ├── contracts.md            # System contracts and interfaces
+│   ├── health-log.md           # Codebase health monitoring log
+│   ├── invariants.md           # Non-negotiable system constraints
+│   ├── markdown-map.md         # Documentation relationship analysis
+│   ├── models.md               # Data models and schemas
+│   ├── stubs.md                # Stub definitions for development
+│   ├── vision.md               # System philosophy and long-term goals
+│   │
+│   ├── audits/                 # Phase audit reports
+│   │   └── phase-01-audit.md   # Generated audit reports for phases
+│   │
+│   ├── decisions/              # Architecture Decision Records (ADRs)
+│   │   └── adr-template.md     # Template for creating new ADRs
+│   │
+│   └── glossary/               # Term and file contracts
+│       ├── glossary.md         # System terminology definitions
+│       └── markdown-glossary.md # Central hub: authoritative source for update triggers
+│
+├── scripts/                    # Automation scripts
+│   └── hooks/                  # Git hooks for enforcement
+│       ├── README.md           # Git hooks documentation
+│       ├── commit-msg          # Commit message validation hook
+│       └── pre-commit          # Pre-commit validation hook
+│
+└── skills/                     # LLM-enforced procedures and skills
+    └── llm/                    # LLM-specific skills and capabilities
+        ├── codebase-health.md  # Skill for monitoring codebase health
+        └── phase-audit.md      # Skill for enforcing phase completion protocol
 ```
 
 ## Purpose
