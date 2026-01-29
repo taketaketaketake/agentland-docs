@@ -104,8 +104,7 @@ See [docs/markdown-map.md](docs/markdown-map.md) for the full relationship analy
 │   ├── stubs.md                # Stub definitions for development
 │   ├── vision.md               # System philosophy and long-term goals
 │   │
-│   ├── audits/                 # Phase audit reports
-│   │   └── phase-01-audit.md   # Generated audit reports for phases
+│   ├── audits/                 # Phase audit reports (generated per phase)
 │   │
 │   ├── decisions/              # Architecture Decision Records (ADRs)
 │   │   └── adr-template.md     # Template for creating new ADRs
@@ -135,7 +134,20 @@ Each file in this repository is designed to become a reusable template for spec-
 3. Governance ensures compliance
 4. Documentation stays synchronized with reality
 
-## Getting Started
+## Quick Start
+
+```bash
+npx spec-driven-docs init
+```
+
+This copies all documentation templates into your current project directory. Use `--force` to overwrite existing files.
+
+Then:
+1. Customize `CLAUDE.md` for your project
+2. Fill in `docs/vision.md` with your system intent
+3. Update `implementation-plan.md` with your phases
+
+## Learn More
 
 See [docs/vision.md](docs/vision.md) for the system philosophy.
 
