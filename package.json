@@ -1,9 +1,9 @@
 {
-  "name": "agentland-docs",
+  "name": "spec-driven-docs",
   "version": "1.0.0",
   "description": "Documentation templates for spec-driven development of AI-native systems",
   "bin": {
-    "agentland-docs": "./bin/cli.js"
+    "spec-driven-docs": "./bin/cli.js"
   },
   "files": [
     "bin",
@@ -21,6 +21,6 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/taketaketaketake/agentland-docs"
+    "url": ""
   }
 }

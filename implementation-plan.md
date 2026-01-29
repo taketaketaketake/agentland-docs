@@ -6,6 +6,7 @@
 
 ## Status
 
+<!-- Update this section as phases are completed -->
 
 ---
 
@@ -18,7 +19,7 @@ A phase may be marked COMPLETE only when:
 
 **Validation is mandatory for phase completion.**
 
-See `docs/invariants.md`for the formal constraint.
+See `docs/invariants.md` for the formal constraint.
 
 ---
 
@@ -28,30 +29,17 @@ Each layer exists, is wired, observable, and empty-but-ready.
 
 ---
 
-## Stack (Confirmed)
+## Stack
+
+<!-- Define your technology stack here -->
 
 | Component | Purpose |
 |-----------|---------|
-| Python | Runtime |
-| Temporal | Workflow orchestration |
-| Postgres | Persistence |
-| SQLAlchemy Core + Pydantic | Models & validation |
-| Docker / Docker Compose | Containerization |
-| OpenTelemetry | Baseline observability |
-| Braintrust | Later, pluggable, not blocking |
-| Cloudflare R2 | Artifact target, stubbed initially |
-
-**Redis:** Not required at this stage.
+| | |
 
 ---
 
-## The Control Loop (Canonical)
-
-Each phase below instantiates one or more boxes, empty but wired.
-
----
-
-## PHASE 0 — Repo + Boundaries (Day 0)
+## PHASE 0 — Repo + Boundaries
 
 ### Goal
 
@@ -60,91 +48,8 @@ Create a repository that enforces separation of concerns from day one.
 ### Deliverables
 
 - Repo skeleton
-- Docker Compose spine
+- Infrastructure spine
 - Nothing "agentic" yet
-
-### Structure (after Phase 2)
-
-```
-repo/
-├─ .claude/
-│  └─ settings.local.json
-├─ .cursor/
-│  └─ rules.md
-├─ ai/
-│  ├─ design-time/
-│  │  ├─ assumptions.md
-│  │  ├─ boundaries.md
-│  │  ├─ context.md
-│  │  └─ rules.md
-│  └─ runtime/
-│     ├─ contracts/
-│     │  ├─ directive.md
-│     │  ├─ evaluation.md
-│     │  └─ safety.md
-│     ├─ evaluation/
-│     │  └─ scoring.md
-│     └─ roles/
-│        ├─ executive.md
-│        ├─ planner.md
-│        └─ supervisor.md
-├─ alembic/                          # [Phase 2, 4]
-│  ├─ versions/
-│  │  ├─ 001_initial_schema.py
-│  │  └─ 002_expand_directive_schema.py  # [Phase 4]
-│  ├─ env.py
-│  └─ script.py.mako
-├─ docs/
-│  ├─ decisions/
-│  │  ├─ adr-001-agent-runtime.md
-│  │  └─ adr-002-llm-native-repo-structure.md
-│  ├─ glossary/
-│  │  ├─ glossary.md
-│  │  └─ markdown-glossary.md
-│  ├─ architecture.md
-│  ├─ invariants.md
-│  ├─ models.md
-│  └─ vision.md
-├─ prompts/
-│  ├─ agents/
-│  ├─ system/
-│  └─ workflows/
-├─ scripts/
-│  ├─ validate_schema.py             # [Phase 2]
-│  └─ validate_directives.py         # [Phase 4]
-├─ skills/
-├─ src/
-│  ├─ __init__.py                    # [Phase 2]
-│  ├─ agents/
-│  ├─ evaluation/
-│  ├─ infra/
-│  │  ├─ __init__.py                 # [Phase 2]
-│  │  ├─ db/                         # [Phase 2]
-│  │  │  ├─ __init__.py
-│  │  │  ├─ engine.py
-│  │  │  ├─ session.py
-│  │  │  └─ tables.py
-│  │  ├─ directives/                 # [Phase 4]
-│  │  │  ├─ __init__.py
-│  │  │  ├─ lifecycle.py
-│  │  │  └─ schema.py
-│  │  └─ models/                     # [Phase 2]
-│  │     ├─ __init__.py
-│  │     ├─ governance.py
-│  │     ├─ memory.py
-│  │     └─ artifacts.py
-│  ├─ memory/
-│  └─ workflows/
-├─ tests/
-├─ .env.example                      # [Phase 2]
-├─ .gitignore                        # [Phase 2]
-├─ alembic.ini                       # [Phase 2]
-├─ CLAUDE.md
-├─ docker-compose.yml
-├─ implementation-plan.md
-├─ pyproject.toml                    # [Phase 2]
-└─ README.md
-```
 
 ### Rule
 
@@ -154,25 +59,20 @@ repo/
 
 ---
 
-## PHASE 1 — Infrastructure Spine (Day 1) — COMPLETE
+## PHASE 1 — Infrastructure Spine
 
 ### Goal
 
-
-### Status: COMPLETE
-
+<!-- Define the goal for this phase -->
 
 ### Components
 
-- Postgres
-- Temporal server + UI
-- OpenTelemetry collector (baseline)
-- Python service container (idle)
-
-### docker-compose.yml services
+<!-- List infrastructure components -->
 
 ---
 
-## PHASE 2 — 
+## PHASE 2 — [Next Phase]
 
-...
+<!-- Continue defining phases as needed -->
+
+---

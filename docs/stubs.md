@@ -1,10 +1,6 @@
 # Stub Registry
 
-> ⚠️ **This document is NOT an implementation plan.**
-> It does not authorize code changes or execution.
-> All implementation requires an approved entry in `implementation-plan.md`.
-
-This document is the **authoritative registry** of all stubbed components in the system.
+> This document is the **authoritative registry** of all stubbed components in the system.
 
 Every stub must have:
 - A documented reason for existing
@@ -17,13 +13,9 @@ Phase audits FAIL if a NoOp/stub exists without a corresponding entry in this re
 
 ---
 
-## LLM Layer (Phase 9)
-
----
-
 ## Enforcement
 
-The phase audit skill (``) must verify:
+The phase audit skill must verify:
 
 1. Every file matching `**/noop*.py` or `**/*_stub*.py` has a registry entry
 2. Every registry entry has all required fields
@@ -53,12 +45,4 @@ When replacing a stub:
 | Category | Stub Count | Permanent | Replaced | To Replace |
 |----------|------------|-----------|----------|------------|
 
-
-All replaceable stubs have been replaced.
-6 stubs are permanent by design ().
-5 stubs have been replaced:
-- 
-- 
-- 
-- 
-- 
+<!-- Update this table as stubs are added or replaced -->

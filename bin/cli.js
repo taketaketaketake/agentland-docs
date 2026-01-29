@@ -8,10 +8,10 @@ const COMMANDS = ['init', 'help'];
 
 function printHelp() {
   console.log(`
-agentland-docs - Documentation templates for spec-driven development
+spec-driven-docs - Documentation templates for spec-driven development
 
 Usage:
-  npx agentland-docs <command> [options]
+  npx spec-driven-docs <command> [options]
 
 Commands:
   init [--force]    Copy documentation templates to current directory
@@ -21,8 +21,8 @@ Options:
   --force           Overwrite existing files without prompting
 
 Examples:
-  npx agentland-docs init
-  npx agentland-docs init --force
+  npx spec-driven-docs init
+  npx spec-driven-docs init --force
 `);
 }
 

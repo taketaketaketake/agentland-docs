@@ -2,14 +2,7 @@
 
 ## Purpose
 
-This repository exists to build an **AI-native management and orchestration system** that operates *alongside* and inside of a working codebase.
-
-The system does **not** replace production code, operational pipelines, or business logic.
-Instead ...:
-
-- 
-- 
-- 
+<!-- Define what your system exists to build and why -->
 
 The long-term objective is to...
 
@@ -19,10 +12,10 @@ The long-term objective is to...
 
 This system is:
 
-- 
-- 
-- 
-- 
+-
+-
+-
+-
 
 ---
 
@@ -30,41 +23,41 @@ This system is:
 
 This system is explicitly **not**:
 
-- 
-- 
-- 
-- 
-- 
+-
+-
+-
+-
+-
 
 ---
 
 ## Core Principles
 
-### 1. 
-
-- 
-- 
-- 
-
----
-
-### 2. 
+### 1.
 
 -
-- 
-- 
+-
+-
 
 ---
 
-### 3. 
+### 2.
 
-- 
-- 
-- 
+-
+-
+-
 
 ---
 
-### 4. 
+### 3.
+
+-
+-
+-
+
+---
+
+### 4.
 
 The system is designed for:
 - Accountability
@@ -75,8 +68,8 @@ The system is designed for:
 
 ## Intended Outcome
 
-- 
-- 
-- 
-- 
-- 
+-
+-
+-
+-
+-

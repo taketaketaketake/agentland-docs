@@ -1,18 +1,9 @@
 {
   "permissions": {
     "allow": [
-      "Bash(git init:*)",
-      "Bash(git remote add:*)",
-      "Bash(git -C \"C:/github-projects/agentland-docs\" diff)",
-      "Bash(git -C \"C:/github-projects/agentland-docs\" log --oneline -5)",
-      "Bash(git -C \"C:/github-projects/agentland-docs\" add README.md)",
-      "Bash(git -C \"C:/github-projects/agentland-docs\" commit -m \"$\\(cat <<''EOF''\nAdd visual documentation relationship map to README\n\nEOF\n\\)\")",
-      "Bash(git -C \"C:/github-projects/agentland-docs\" push)",
-      "Bash(dir /s /b \"C:\\\\github-projects\\\\agentland-docs\\\\templates\")",
-      "Bash(node:*)",
-      "Bash(npm whoami:*)",
-      "Bash(npm publish)",
-      "Bash(npm config set:*)"
+      "Bash(git add:*)",
+      "Bash(git commit -m \"$\\(cat <<''EOF''\nRemove project-specific content, generalize as reusable template\nEOF\n\\)\")",
+      "Bash(git push:*)"
     ]
   }
 }
