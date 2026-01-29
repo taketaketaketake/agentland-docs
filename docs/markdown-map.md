@@ -87,7 +87,7 @@ This document visualizes the relationships between all markdown files in the age
 | **implementation-plan.md** | Planning | Phase tracking and status | ← phase-audit.md, codebase-health.md |
 | **docs/vision.md** | Core Docs | Long-term intent | ← CLAUDE.md, README.md |
 | **docs/architecture.md** | Core Docs | Structural reality | ← markdown-glossary.md |
-| **docs/invariants.md** | Core Docs | Non-negotiable constraints | ← CLAUDE.md (§15) |
+| **docs/invariants.md** | Core Docs | Non-negotiable constraints | ← CLAUDE.md |
 | **docs/models.md** | Core Docs | Data models | ← markdown-glossary.md |
 | **docs/glossary/markdown-glossary.md** | Authority | Update trigger definitions | → 15+ files (Hub) |
 | **docs/glossary/glossary.md** | Reference | Term definitions | ← markdown-glossary.md |
@@ -113,7 +113,7 @@ This document visualizes the relationships between all markdown files in the age
 - `@docs/vision.md` - Defines long-term intent
 - `@README.md` - Repository overview
 - `@docs/glossary/markdown-glossary.md` - Authoritative source for update triggers
-- `docs/invariants.md` (§15) - References invariant about phase completion
+- `docs/invariants.md` - References invariant about phase completion
 
 **Incoming References:** None (top-level instruction file)
 
