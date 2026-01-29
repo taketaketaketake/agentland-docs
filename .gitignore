@@ -1,0 +1,16 @@
+# Dependencies
+node_modules/
+
+# npm package files
+*.tgz
+package-lock.json
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.idea/
+.vscode/
+*.swp
+*.swo

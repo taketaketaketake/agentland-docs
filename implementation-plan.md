@@ -6,12 +6,6 @@
 
 ## Status
 
-**All 15 infrastructure phases are complete.**
-
-This plan is now frozen. No new phases will be added to this repository.
-
-Agent logic, cognition, and product-specific behavior belong in downstream forks.
-See `docs/handoff.md` for integration guidance.
 
 ---
 
@@ -24,7 +18,7 @@ A phase may be marked COMPLETE only when:
 
 **Validation is mandatory for phase completion.**
 
-See `docs/invariants.md` §16 for the formal constraint.
+See `docs/invariants.md`for the formal constraint.
 
 ---
 
