@@ -73,6 +73,15 @@ Never collapse these layers.
    - Do not take shortcuts simply because shortcuts are convenient. Identify root cause and address the core issue.
 ---
 
+## Plan File Rule
+
+When writing or updating a plan (whether in plan mode or otherwise),
+you MUST update `docs/implementation-plan.md` in the SAME action.
+The plan mode file is scratch space. `docs/implementation-plan.md` is
+the source of truth. Never treat one as done without updating the other.
+
+---
+
 ## How to Work in Phases
 
 When implementing a phase:
