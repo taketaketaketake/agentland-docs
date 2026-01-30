@@ -175,6 +175,45 @@ Ad hoc, local only.
 
 ---
 
+## .github/
+
+### .github/copilot-instructions.md
+
+**Purpose**
+Instructions for GitHub Copilot coding agent when working in this repository.
+
+**What Goes Inside**
+- Repository purpose and what it is/isn't
+- Development philosophy and core principles
+- Phase-based workflow and completion protocol
+- Key documentation files to reference
+- Files and directories that should never be modified
+- Git commands, testing patterns, and conventions
+- Architectural boundaries and multi-LLM support
+- Top rules for success
+
+**What Does NOT Go Inside**
+- Temporary instructions
+- Code samples
+- Project-specific business logic
+- Implementation details
+
+**Audience**
+GitHub Copilot coding agent (LLM).
+
+**Update Cadence**
+Infrequent. Updated when repository development practices or structure materially changes.
+
+**Update Triggers**
+- New system invariants are introduced
+- Architectural boundaries are redefined
+- Phase completion protocol changes
+- Repository structure changes in ways that affect agent behavior
+- New authoritative files are added
+- Development workflows or conventions change
+
+---
+
 ## docs/ (Authoritative Documentation)
 
 ### docs/vision.md
