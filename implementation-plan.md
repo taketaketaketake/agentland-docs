@@ -1,12 +1,12 @@
-# Foundational Infrastructure Plan
+# Implementation Plan Template
 
-> Empty but Real, End-to-End
+> [Brief tagline describing the implementation approach]
 
 ---
 
 ## Status
 
-<!-- Update this section as phases are completed -->
+**Current Phase:** Phase 0
 
 ---
 
@@ -23,56 +23,67 @@ See `docs/invariants.md` for the formal constraint.
 
 ---
 
-Below is a phased, infrastructure-only implementation plan.
-No business logic. No project-specific agents.
-Each layer exists, is wired, observable, and empty-but-ready.
-
----
-
 ## Stack
-
-<!-- Define your technology stack here -->
 
 | Component | Purpose |
 |-----------|---------|
-| | |
+| [Technology] | [Purpose] |
+| [Technology] | [Purpose] |
+| [Technology] | [Purpose] |
 
 ---
 
-## PHASE 0 — Repo + Boundaries
+## PHASE 0 — [Phase Name]
 
 ### Goal
 
-Create a repository that enforces separation of concerns from day one.
+[Describe the goal of this phase]
 
 ### Deliverables
 
-- Repo skeleton
-- Infrastructure spine
-- Nothing "agentic" yet
+- [Deliverable 1]
+- [Deliverable 2]
+- [Deliverable 3]
 
-### Rule
+### Exit Criteria
 
-> Nothing in `src/` imports from `ai/runtime/` directly.
-> Execution code must not reason. Cognition must not execute.
-> **This boundary is sacred.**
+A phase may be marked COMPLETE only when:
+
+- [ ] All exit criteria are satisfied
+- [ ] All required validation scripts have been executed successfully
+- [ ] A phase audit has passed
+
+### Status: NOT STARTED
 
 ---
 
-## PHASE 1 — Infrastructure Spine
+## PHASE 1 — [Phase Name]
 
 ### Goal
 
-<!-- Define the goal for this phase -->
+[Describe the goal]
 
-### Components
+### Deliverables
 
-<!-- List infrastructure components -->
+- [Deliverable 1]
+- [Deliverable 2]
+
+### Exit Criteria
+
+A phase may be marked COMPLETE only when:
+
+- [ ] All exit criteria are satisfied
+- [ ] All required validation scripts have been executed successfully
+- [ ] A phase audit has passed
+
+### Status: NOT STARTED
 
 ---
 
-## PHASE 2 — [Next Phase]
+## End State
 
-<!-- Continue defining phases as needed -->
+After completing all phases, you will have:
 
----
+1. [Outcome 1]
+2. [Outcome 2]
+3. [Outcome 3]
