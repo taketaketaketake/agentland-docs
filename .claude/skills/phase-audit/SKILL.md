@@ -1,3 +1,10 @@
+---
+name: phase-audit
+description: Mandatory audit procedure that must pass before any phase may be marked COMPLETE. Verifies documentation updates, ADRs, and validation scripts.
+user-invocable: true
+allowed-tools: Read Grep Glob Bash Write
+---
+
 # Skill: phase_audit
 
 ## Purpose
@@ -84,26 +91,46 @@ If `implementation-plan.md` does not reflect phase completion: `status = MISSING
 
 For the completed phase, verify that an Architecture Decision Record exists.
 
+**Grandfather clause:** ADRs numbered 001-009 are exempt from template enforcement.
+Template validation applies only to ADR-010 and later.
+
 1. **Check for ADR existence**
    - Inspect `docs/decisions/` for at least one ADR that references this phase
    - ADR filename should follow pattern: `adr-NNN-<short-slug>.md`
    - At least one ADR MUST reference the completed phase number in its Phase section
+   - Note: Not all ADRs must map to phases (cross-cutting decisions use `Phase: N/A`)
 
-2. **Validate ADR structure**
+2. **Validate ADR structure** (ADR-010+ only)
    - The ADR MUST follow `docs/decisions/adr-template.md`
    - Required sections: Status, Date, Phase, Context, Decisions, Constraints Enforced, Alternatives Considered, Consequences, Outcome, Validation
    - The ADR MUST be marked `Status: Accepted`
 
 3. **Validate ADR content**
-   - Decisions documented must be observable in the codebase
+   - Decisions documented must be observable in the codebase (see examples below)
    - Constraints listed must match actual enforcement in code
    - Validation section must cite concrete evidence (scripts, tests, schema)
 
 4. **Record ADR status**
    - `CREATED_AND_VALID`: ADR exists, follows template, content is accurate
    - `MISSING`: No ADR exists for this phase
-   - `INVALID_FORMAT`: ADR exists but does not follow template
+   - `INVALID_FORMAT`: ADR exists but does not follow template (ADR-010+ only)
    - `INCOMPLETE_CONTENT`: ADR exists but decisions/constraints are not grounded in code
+
+#### What qualifies as "observable in the codebase"
+
+**Examples that PASS:**
+- New files, modules, or directories exist
+- A database migration introduces new tables/columns
+- A workflow/activity is implemented
+- A lifecycle/state machine exists in code
+- A previously forbidden import is still absent
+
+**Examples that FAIL:**
+- Decisions about future behavior not yet implemented
+- Aspirational patterns without code presence
+- "Planned" integrations without stubs or interfaces
+
+---
 
 ### Step 6: Validation Check (MANDATORY)
 
@@ -273,6 +300,47 @@ The skill MUST output:
 
 ---
 
+## Invocation Examples
+
+### Example 1: Invoking after completing Phase 1
+
+```
+Inputs:
+  phase_number: "1"
+  phase_description: "Database foundation with Alembic migrations"
+  changes_made:
+    - Added PostgreSQL schema for directives table
+    - Created Alembic migration infrastructure
+    - Added SQLAlchemy models in src/infra/models/
+```
+
+### Example 2: Audit failure response (documentation)
+
+```
+VERDICT: FAIL
+
+Required actions before marking Phase 1 complete:
+1. Update docs/models.md to document the directives table schema
+2. Update docs/architecture.md to reflect the new database layer
+3. Mark Phase 1 as complete in implementation-plan.md
+4. Create ADR for Phase 1 following docs/decisions/adr-template.md
+```
+
+### Example 3: Audit failure response (ADR)
+
+```
+VERDICT: FAIL
+
+ADR Status: INCOMPLETE_CONTENT
+
+Required actions before marking Phase 3 complete:
+1. ADR-006 is missing "Alternatives Considered" section
+2. ADR-006 "Constraints Enforced" lists "vector store integration" but no vector code exists
+3. Add validation evidence to ADR-006 Validation section
+```
+
+---
+
 ## Constraints
 
 - This skill does not modify files. It only audits.
@@ -280,6 +348,34 @@ The skill MUST output:
 - A FAIL verdict blocks phase completion until remediation is done.
 - The glossary (`docs/glossary/markdown-glossary.md`) is the sole source of truth for documentation update requirements.
 - The ADR template (`docs/decisions/adr-template.md`) is the sole source of truth for ADR structure.
+- Phase completion artifacts (documentation, ADRs) are enforced by this audit, not by separate skills.
+
+---
+
+## Invalid Substitutes for Implementation Plans
+
+The following documents are **retrospective seals** that document past work.
+They MUST NOT be treated as implementation plans or authorization to write code:
+
+| Document | Purpose | Authorizes Code? |
+|----------|---------|------------------|
+| `docs/stubs.md` | Registry of existing stubs | No |
+| `docs/artifacts.md` | Taxonomy of existing artifact types | No |
+| `docs/contracts.md` | Completeness status of existing interfaces | No |
+| `docs/decisions/*.md` (ADRs) | Decision justification | No |
+| `docs/glossary/*.md` | Routing & enforcement rules | No |
+
+**Only `implementation-plan.md` authorizes implementation work.**
+
+If Claude attempts to proceed with code changes based on any of the above documents
+without an approved entry in `implementation-plan.md`, the audit MUST FAIL.
+
+### Detection During Audit
+
+When auditing a phase, verify:
+1. The phase has a corresponding entry in `implementation-plan.md`
+2. Claude did not treat stabilization docs as implicit planning authorization
+3. Any "planned" work in stabilization docs has a separate implementation plan entry
 
 ---
 
@@ -288,6 +384,11 @@ The skill MUST output:
 This skill is bound to CLAUDE.md as a mandatory pre-completion check.
 
 Claude must refuse to mark a phase complete if this audit returns FAIL.
+
+**Note on enforcement mechanism:**
+This enforcement currently relies on Claude's compliance with CLAUDE.md directives.
+Future automation (CI hooks, git checks) may formalize this into machinery.
+Until then, the audit is convention-based but mandatory.
 
 ---
 

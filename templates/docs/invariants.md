@@ -46,7 +46,7 @@ The mandatory sequence is:
 | Only then mark COMPLETE | Yes |
 
 This invariant is enforced by:
-- `skills/llm/phase-audit.md` (procedure)
+- `.claude/skills/phase-audit/SKILL.md` (procedure)
 - `CLAUDE.md` Phase Completion Protocol (behavioral rule)
 
 ---

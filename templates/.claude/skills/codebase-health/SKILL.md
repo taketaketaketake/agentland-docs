@@ -1,3 +1,11 @@
+---
+name: codebase-health
+description: Perform a structured codebase health assessment and append results to docs/health-log.md. Use when asked to check codebase health.
+user-invocable: true
+allowed-tools: Read Grep Glob Bash Edit
+argument-hint: []
+---
+
 # Skill: codebase_health
 
 ## Purpose
@@ -11,7 +19,7 @@ This creates a longitudinal record of codebase quality over time.
 ## Invocation
 
 User says any of:
-- `/health`
+- `/codebase-health`
 - `run codebase health check`
 - `assess codebase health`
 

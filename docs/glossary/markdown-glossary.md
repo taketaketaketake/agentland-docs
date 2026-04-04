@@ -485,7 +485,7 @@ Machine-verifiable record that a phase passed its audit before being marked COMP
 **What Does NOT Go Inside**
 - Implementation details
 - Code
-- Full audit procedure (that's in skills/llm/phase-audit.md)
+- Full audit procedure (that's in .claude/skills/phase-audit/SKILL.md)
 
 **Audience**
 CI automation and humans verifying compliance.
@@ -888,13 +888,16 @@ When provider patterns change.
 
 ---
 
-## skills/ (LLM-Enforced Procedures)
+## .claude/skills/ (LLM-Enforced Procedures)
 
 **Purpose**
 Defines deterministic, procedural behaviors that an LLM must follow.
 
 Skills are not prompts, suggestions, or examples.
 They are **enforcement mechanisms** expressed as markdown.
+
+Each skill is a directory containing a `SKILL.md` entrypoint with YAML frontmatter,
+following the Claude Code skills convention.
 
 **What Goes Inside**
 - Step-by-step procedures
@@ -920,7 +923,7 @@ Rare. Skills define system behavior and must be stable.
 - An existing enforcement mechanism changes
 - A skill is promoted from advisory to mandatory
 
-### skills/llm/codebase-health.md
+### .claude/skills/codebase-health/SKILL.md
 
 **Purpose**
 Defines the procedure for performing structured codebase health assessments.
@@ -949,7 +952,7 @@ Rare.
 
 ---
 
-### skills/llm/phase-audit.md
+### .claude/skills/phase-audit/SKILL.md
 
 **Purpose**
 Defines the mandatory audit procedure that must be passed before any phase may be marked COMPLETE.

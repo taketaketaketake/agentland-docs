@@ -1,3 +1,10 @@
+---
+name: phase-audit
+description: Mandatory audit procedure that must pass before any phase may be marked COMPLETE. Verifies documentation updates, ADRs, and validation scripts.
+user-invocable: true
+allowed-tools: Read Grep Glob Bash Write
+---
+
 # Skill: phase_audit
 
 ## Purpose
@@ -352,11 +359,11 @@ They MUST NOT be treated as implementation plans or authorization to write code:
 
 | Document | Purpose | Authorizes Code? |
 |----------|---------|------------------|
-| `docs/stubs.md` | Registry of existing stubs | ❌ No |
-| `docs/artifacts.md` | Taxonomy of existing artifact types | ❌ No |
-| `docs/contracts.md` | Completeness status of existing interfaces | ❌ No |
-| `docs/decisions/*.md` (ADRs) | Decision justification | ❌ No |
-| `docs/glossary/*.md` | Routing & enforcement rules | ❌ No |
+| `docs/stubs.md` | Registry of existing stubs | No |
+| `docs/artifacts.md` | Taxonomy of existing artifact types | No |
+| `docs/contracts.md` | Completeness status of existing interfaces | No |
+| `docs/decisions/*.md` (ADRs) | Decision justification | No |
+| `docs/glossary/*.md` | Routing & enforcement rules | No |
 
 **Only `implementation-plan.md` authorizes implementation work.**
 

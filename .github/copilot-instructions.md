@@ -74,7 +74,7 @@ Each phase should result in:
 
 Before marking a phase complete, you MUST:
 
-1. Invoke the `phase_audit` skill (`skills/llm/phase-audit.md`)
+1. Invoke the `phase_audit` skill (`.claude/skills/phase-audit/SKILL.md`)
 2. Provide all required inputs:
    - `phase_number`: The phase being completed
    - `phase_description`: What the phase accomplished
@@ -107,7 +107,7 @@ Always reference these files when working in this repository:
 
 ### Governance Files
 - **`docs/glossary/markdown-glossary.md`**: Authoritative source for update triggers and documentation contracts
-- **`skills/llm/phase-audit.md`**: Phase completion audit procedure
+- **`.claude/skills/phase-audit/SKILL.md`**: Phase completion audit procedure
 - **`docs/decisions/`**: Architecture Decision Records (ADRs)
 
 ### Reference Files

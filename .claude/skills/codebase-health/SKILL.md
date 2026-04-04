@@ -1,3 +1,11 @@
+---
+name: codebase-health
+description: Perform a structured codebase health assessment and append results to docs/health-log.md. Use when asked to check codebase health.
+user-invocable: true
+allowed-tools: Read Grep Glob Bash Edit
+argument-hint: []
+---
+
 # Skill: codebase_health
 
 ## Purpose
@@ -11,7 +19,7 @@ This creates a longitudinal record of codebase quality over time.
 ## Invocation
 
 User says any of:
-- `/health`
+- `/codebase-health`
 - `run codebase health check`
 - `assess codebase health`
 
@@ -46,7 +54,7 @@ Inspect the following areas:
 |------|---------------|
 | **Phase Status** | Read `implementation-plan.md`, identify completed/in-progress phases |
 | **Source Code** | Scan `src/` for modules, patterns, code quality |
-| **Database** | Check for migration count and recency |
+| **Database** | Check `alembic/versions/` for migration count and recency |
 | **Documentation** | Verify `docs/` files exist and are current |
 | **Validation** | Check `scripts/` for validation coverage |
 | **Tests** | Check `tests/` for test coverage |

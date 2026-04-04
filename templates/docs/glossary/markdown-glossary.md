@@ -409,13 +409,16 @@ Extremely rare.
 
 ---
 
-## skills/ (LLM-Enforced Procedures)
+## .claude/skills/ (LLM-Enforced Procedures)
 
 **Purpose**
 Defines deterministic, procedural behaviors that an LLM must follow.
 
 Skills are not prompts, suggestions, or examples.
 They are **enforcement mechanisms** expressed as markdown.
+
+Each skill is a directory containing a `SKILL.md` entrypoint with YAML frontmatter,
+following the Claude Code skills convention.
 
 **What Goes Inside**
 - Step-by-step procedures

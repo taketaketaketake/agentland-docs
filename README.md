@@ -82,8 +82,13 @@ See [docs/markdown-map.md](docs/markdown-map.md) for the full relationship analy
 
 ```
 .
-├── .claude/                    # Claude Code Editor configuration
-│   └── settings.local.json     # Local Claude settings
+├── .claude/                    # Claude Code configuration
+│   ├── settings.local.json     # Local Claude settings
+│   └── skills/                 # LLM-enforced procedures (Claude Code convention)
+│       ├── codebase-health/    # Skill for monitoring codebase health
+│       │   └── SKILL.md        # Skill entrypoint with frontmatter
+│       └── phase-audit/        # Skill for enforcing phase completion protocol
+│           └── SKILL.md        # Skill entrypoint with frontmatter
 │
 ├── .github/                    # GitHub-specific configurations
 │   └── workflows/              # GitHub Actions workflows
@@ -113,16 +118,11 @@ See [docs/markdown-map.md](docs/markdown-map.md) for the full relationship analy
 │       ├── glossary.md         # System terminology definitions
 │       └── markdown-glossary.md # Central hub: authoritative source for update triggers
 │
-├── scripts/                    # Automation scripts
-│   └── hooks/                  # Git hooks for enforcement
-│       ├── README.md           # Git hooks documentation
-│       ├── commit-msg          # Commit message validation hook
-│       └── pre-commit          # Pre-commit validation hook
-│
-└── skills/                     # LLM-enforced procedures and skills
-    └── llm/                    # LLM-specific skills and capabilities
-        ├── codebase-health.md  # Skill for monitoring codebase health
-        └── phase-audit.md      # Skill for enforcing phase completion protocol
+└── scripts/                    # Automation scripts
+    └── hooks/                  # Git hooks for enforcement
+        ├── README.md           # Git hooks documentation
+        ├── commit-msg          # Commit message validation hook
+        └── pre-commit          # Pre-commit validation hook
 ```
 
 ## Purpose
