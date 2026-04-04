@@ -18,6 +18,9 @@
     "llm",
     "claude"
   ],
+  "scripts": {
+    "prepare": "git config core.hooksPath scripts/hooks || true"
+  },
   "author": "",
   "license": "MIT",
   "repository": {
