@@ -66,6 +66,15 @@ Never collapse these layers.
 
 ---
 
+## Plan File Rule
+
+When writing or updating a plan (whether in plan mode or otherwise),
+you MUST update `docs/plan/plan-template.md` in the SAME action.
+The plan mode file is scratch space. `docs/plan/plan-template.md` is
+the source of truth. Never treat one as done without updating the other.
+
+---
+
 ## How to Work in Phases
 
 When implementing a phase:
@@ -114,6 +123,13 @@ Claude MUST:
 - **If a phase audit passes**, execution is mandatory unless explicitly blocked.
 
 This is not a suggestion. This is a hard gate.
+
+This protocol exists because:
+- Documentation correctness is a first-class invariant
+- The glossary defines what must be updated
+- Human memory is not reliable; enforcement must be automatic
+- A phase is not complete until its documentation is complete
+- Skipping audits causes compounding documentation drift
 
 The source of truth for required documentation updates is:
 `docs/glossary/markdown-glossary.md` → Update Triggers
