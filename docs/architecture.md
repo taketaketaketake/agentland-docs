@@ -4,32 +4,34 @@
 
 ### Implemented
 
-<!-- List implemented components -->
+[List implemented components]
 
 ### Not Yet Implemented
 
-<!-- List planned components -->
+[List pending components]
 
 ## Layers
 
-<!-- Define your architectural layers -->
+```
+[Describe your architecture layers]
+```
 
 ## Boundaries
 
 ### Sacred Rule
 
-<!-- Define the core boundary rule for your system -->
+[Define the most important architectural boundary]
 
 ### Current Boundary Integrity
 
-<!-- Describe the current state of boundary enforcement -->
+[Describe boundary enforcement status]
 
 ## Infrastructure
 
 ### Services
 
-<!-- List your infrastructure services -->
+[List services and their purposes]
 
 ### Databases
 
-<!-- List your data stores -->
+[List databases and their roles]

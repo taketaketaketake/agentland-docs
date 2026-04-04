@@ -14,19 +14,17 @@ and how to interact with the system.
 
 ## What This Repository Is
 
-This repository implements a **control-plane architecture** for an
-LLM-enabled management and execution system.
+This repository implements a **[describe your system here]**.
 
 It is:
-- infrastructure-first
-- governance-driven
-- designed for long-lived evolution
+- [characteristic 1]
+- [characteristic 2]
+- [characteristic 3]
 
 It is **not**:
-- a business application
-- an agent demo
-- a prompt playground
-- a replacement for production code
+- [non-goal 1]
+- [non-goal 2]
+- [non-goal 3]
 
 ---
 
@@ -34,12 +32,9 @@ It is **not**:
 
 Use this mental model:
 
-- Postgres = truth
-- Directives = frozen intent
-- Temporal = coordination and durability
-- Execution modules = bounded action
-- Agents = replaceable reasoning components
-- Memory = external, inspectable, persistent
+- [Component] = [role]
+- [Component] = [role]
+- [Component] = [role]
 
 Never collapse these layers.
 
@@ -54,31 +49,20 @@ Never collapse these layers.
    - Only implement what is specified in the current phase or PRD.
 
 3. **Respect architectural boundaries**
-   - Execution code must not reason.
-   - Cognition must not execute.
-   - Temporal must not decide.
+   - [boundary rule 1]
+   - [boundary rule 2]
+   - [boundary rule 3]
 
 4. **Prefer explicit structure over clever abstractions**
    - Boring, readable code is preferred.
    - Avoid meta-programming and hidden control flow.
 
-5. **Do not assume a single LLM**
-   - All designs must support multiple models with differing capabilities.
-
-6. **If unsure, stop and ask**
+5. **If unsure, stop and ask**
    - Do not guess intent.
    - List assumptions and wait for confirmation.
 
-7. **Always use best practices**
+6. **Always use best practices**
    - Do not take shortcuts simply because shortcuts are convenient. Identify root cause and address the core issue.
----
-
-## Plan File Rule
-
-When writing or updating a plan (whether in plan mode or otherwise),
-you MUST update `docs/implementation-plan.md` in the SAME action.
-The plan mode file is scratch space. `docs/implementation-plan.md` is
-the source of truth. Never treat one as done without updating the other.
 
 ---
 
@@ -102,7 +86,7 @@ Each phase should result in:
 **This rule is non-negotiable and must be followed exactly.**
 
 **Invariant:** No phase may transition to COMPLETE without a passing phase audit.
-(See `docs/invariants.md` §15)
+(See `docs/invariants.md`)
 
 Before ANY of the following:
 - Marking a phase as COMPLETE
@@ -131,13 +115,6 @@ Claude MUST:
 
 This is not a suggestion. This is a hard gate.
 
-This protocol exists because:
-- Documentation correctness is a first-class invariant
-- The glossary defines what must be updated
-- Human memory is not reliable; enforcement must be automatic
-- A phase is not complete until its documentation is complete
-- Skipping audits causes compounding documentation drift
-
 The source of truth for required documentation updates is:
 `docs/glossary/markdown-glossary.md` → Update Triggers
 
@@ -149,5 +126,3 @@ The source of truth for required documentation updates is:
 - `docs/architecture.md` defines structural reality.
 - `docs/invariants.md` defines non-negotiable constraints.
 - `docs/decisions/` contains rationale for past decisions.
-- `ai/design-time/` contains rules for LLM collaborators.
-- `ai/runtime/` contains agent contracts and role definitions.

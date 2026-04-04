@@ -1,23 +1,39 @@
 # Models
 
-## Database Schema
+## Data Models
 
-<!-- Define your data models here -->
-<!-- All tables should use minimal schema initially: IDs, timestamps, TEXT for semantic fields. -->
-<!-- Defer business logic constraints to later phases. -->
+[Describe your data models here]
 
-### Tables
+### [Model Name]
 
-<!-- Define your tables -->
+| Field | Type | Purpose |
+|-------|------|---------|
+| [field] | [type] | [purpose] |
+| [field] | [type] | [purpose] |
+
+### [Model Name]
+
+| Field | Type | Purpose |
+|-------|------|---------|
+| [field] | [type] | [purpose] |
+| [field] | [type] | [purpose] |
 
 ---
 
-## Relationships
+## Mental Models
 
-<!-- Document relationships between models -->
+### [Concept Name]
+
+[Define what this concept means in your system]
+
+### [Concept Name]
+
+[Define what this concept means in your system]
 
 ---
 
 ## Design Decisions
 
-<!-- Record any notable design decisions about your data model -->
+### [Decision Topic]
+
+[Explain the rationale for a key design decision]

@@ -130,6 +130,64 @@ Updated as phases are completed or re-planned.
 
 ---
 
+## .claude/
+
+### .claude/settings.local.json
+
+**Purpose**
+Local, non-versioned Claude configuration.
+
+**What Goes Inside**
+- Model preferences
+- Local overrides
+
+**Audience**
+Claude tooling only.
+
+**Update Cadence**
+Ad hoc, local only.
+
+**Update Triggers**
+- Local environment requirements change
+- User-specific model preferences change
+
+---
+
+## .github/
+
+### .github/copilot-instructions.md
+
+**Purpose**
+Instructions for GitHub Copilot coding agent when working in this repository.
+
+**What Goes Inside**
+- Repository purpose and what it is/isn't
+- Development philosophy and core principles
+- Phase-based workflow and completion protocol
+- Key documentation files to reference
+- Files and directories that should never be modified
+- Architectural boundaries and multi-LLM support
+
+**What Does NOT Go Inside**
+- Temporary instructions
+- Code samples
+- Project-specific business logic
+
+**Audience**
+GitHub Copilot coding agent (LLM).
+
+**Update Cadence**
+Infrequent. Updated when repository development practices or structure materially changes.
+
+**Update Triggers**
+- New system invariants are introduced
+- Architectural boundaries are redefined
+- Phase completion protocol changes
+- Repository structure changes in ways that affect agent behavior
+- New authoritative files are added
+
+---
+
 ## docs/ (Authoritative Documentation)
 
 ### docs/vision.md
@@ -260,7 +318,7 @@ Humans and LLMs reviewing project trajectory.
 Append-only. New entry per assessment.
 
 **Update Triggers**
-- User invokes `/health` or `codebase health check`
+- User invokes `/codebase-health` or `codebase health check`
 - Major milestone completed (optional)
 - Before significant architectural changes (optional)
 
@@ -320,6 +378,41 @@ Updated whenever artifact types are added.
 - Artifact schema changes
 - Retention policy changes
 
+### docs/audits/phase-NN-audit.md
+
+**Purpose**
+Machine-verifiable record that a phase passed its audit before being marked COMPLETE.
+
+**What Goes Inside**
+- Phase number
+- Git SHA at completion
+- Validation scripts executed with results
+- ADR path
+- Verdict (PASS required)
+- Documentation updates verified
+
+**What Does NOT Go Inside**
+- Implementation details
+- Code
+- Full audit procedure (that's in `.claude/skills/phase-audit/SKILL.md`)
+
+**Audience**
+CI automation and humans verifying compliance.
+
+**Update Cadence**
+One file created per phase, at phase completion.
+
+**Update Triggers**
+- Phase is marked COMPLETE (audit file MUST be created)
+- Never modified after creation (append-only record)
+
+**Enforcement**
+CI workflow `.github/workflows/audit-check.yml` fails if:
+- A phase is marked COMPLETE without corresponding audit file
+- Audit file exists but lacks PASS verdict
+
+---
+
 ### docs/contracts.md
 
 **Purpose**
@@ -347,6 +440,8 @@ Updated when interfaces change (rare after stabilization).
 - Interface method is added
 - Enum/taxonomy is expanded
 - Bounds are changed
+
+---
 
 ### docs/glossary/glossary.md
 
@@ -377,6 +472,9 @@ All files under `docs/decisions/` follow the same contract:
 - Immutable after acceptance
 - Never edited retroactively
 - Superseded only by new ADRs
+
+This glossary does not list individual ADR files exhaustively.
+The presence of additional ADRs (e.g., ADR-003, ADR-004, ADR-005) is expected and does not require glossary updates beyond this section.
 
 ### adr-template.md
 
@@ -443,6 +541,122 @@ Rare. Skills define system behavior and must be stable.
 - A new enforced procedure is introduced
 - An existing enforcement mechanism changes
 - A skill is promoted from advisory to mandatory
+
+### .claude/skills/codebase-health/SKILL.md
+
+**Purpose**
+Defines the procedure for performing structured codebase health assessments.
+
+**What Goes Inside**
+- Assessment dimensions and criteria
+- Output format specification
+- Procedure steps
+- Constraints on reporting
+
+**What Does NOT Go Inside**
+- Actual assessment results (those go in `docs/health-log.md`)
+- Phase-specific logic
+- Business metrics
+
+**Audience**
+Claude (optional invocation).
+
+**Update Cadence**
+Rare.
+
+**Update Triggers**
+- Assessment dimensions change
+- Output format changes
+- New health metrics are introduced
+
+---
+
+### .claude/skills/phase-audit/SKILL.md
+
+**Purpose**
+Defines the mandatory audit procedure that must be passed before any phase may be marked COMPLETE.
+
+This is the single enforcement surface for all phase completion artifacts:
+- Documentation updates (per glossary triggers)
+- Architecture Decision Records (per ADR template)
+
+**What Goes Inside**
+- Audit inputs
+- Trigger-matching logic
+- Documentation verification steps
+- ADR verification steps
+- Deterministic PASS / FAIL criteria
+- Required remediation on failure
+
+**What Does NOT Go Inside**
+- Phase-specific logic
+- Implementation details
+- Suggestions or optional steps
+- Separate artifact enforcement (all artifacts enforced here)
+
+**Audience**
+Claude (mandatory enforcement).
+
+**Update Cadence**
+Extremely rare.
+
+**Update Triggers**
+- Documentation governance rules change
+- Phase completion semantics change
+- The glossary authority model changes
+- ADR template structure changes
+- New phase completion artifacts are introduced
+
+---
+
+## scripts/, tests/
+
+**Purpose**
+Operational tooling and validation.
+
+Markdown here should be instructional only if present.
+
+**Update Triggers**
+- Instructional markdown is added when tooling requires documentation
+- Existing instructions become invalid
+
+---
+
+## Adding New Entries to This Glossary
+
+When your project introduces new directories or files, add an entry following this template:
+
+```markdown
+### path/to/new-file.md
+
+**Purpose**
+[What this file is responsible for]
+
+**What Goes Inside**
+- [Content type 1]
+- [Content type 2]
+
+**What Does NOT Go Inside**
+- [Excluded content type 1]
+- [Excluded content type 2]
+
+**Audience**
+[Primary audience]. [Secondary audience].
+
+**Update Cadence**
+[How often this file changes]
+
+**Update Triggers**
+- [Event that requires this file to be updated]
+- [Another event]
+```
+
+Common directory patterns you may add as your project grows:
+
+- **`ai/design-time/`** — Static context files (assumptions, boundaries, rules) for LLM reasoning
+- **`ai/runtime/`** — Operational contracts (directives, evaluation, safety, roles)
+- **`prompts/`** — Reusable prompt components (configuration, not logic)
+- **`src/`** — Executable system code (markdown generally does not belong here except for implementation guides)
 
 ---
 

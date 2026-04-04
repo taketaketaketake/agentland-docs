@@ -2,9 +2,16 @@
 
 ## Purpose
 
-<!-- Define what your system exists to build and why -->
+This repository exists to build **[describe your system]**.
 
-The long-term objective is to...
+The system does **not** replace [what it doesn't replace].
+Instead, it:
+
+- [Purpose 1]
+- [Purpose 2]
+- [Purpose 3]
+
+The long-term objective is to [long-term goal].
 
 ---
 
@@ -12,10 +19,10 @@ The long-term objective is to...
 
 This system is:
 
--
--
--
--
+- [Characteristic 1]
+- [Characteristic 2]
+- [Characteristic 3]
+- [Characteristic 4]
 
 ---
 
@@ -23,41 +30,40 @@ This system is:
 
 This system is explicitly **not**:
 
--
--
--
--
--
+- [Non-goal 1]
+- [Non-goal 2]
+- [Non-goal 3]
+- [Non-goal 4]
 
 ---
 
 ## Core Principles
 
-### 1.
+### 1. [Principle Name]
 
--
--
--
-
----
-
-### 2.
-
--
--
--
+- [Detail 1]
+- [Detail 2]
+- [Detail 3]
 
 ---
 
-### 3.
+### 2. [Principle Name]
 
--
--
--
+- [Detail 1]
+- [Detail 2]
+- [Detail 3]
 
 ---
 
-### 4.
+### 3. [Principle Name]
+
+- [Detail 1]
+- [Detail 2]
+- [Detail 3]
+
+---
+
+### 4. Auditability
 
 The system is designed for:
 - Accountability
@@ -68,8 +74,7 @@ The system is designed for:
 
 ## Intended Outcome
 
--
--
--
--
--
+- [Outcome 1]
+- [Outcome 2]
+- [Outcome 3]
+- [Outcome 4]

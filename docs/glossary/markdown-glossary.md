@@ -130,29 +130,7 @@ Updated as phases are completed or re-planned.
 
 ---
 
-## .cursor/ and .claude/
-
-### .cursor/rules.md
-
-**Purpose**
-Rules and constraints for Cursor's code generation and edits.
-
-**What Goes Inside**
-- Code style rules
-- Forbidden patterns
-- Preferred abstractions
-- Safety rails
-
-**Audience**
-LLMs via Cursor.
-
-**Update Cadence**
-As tooling behavior needs correction.
-
-**Update Triggers**
-- Cursor generates code violating established patterns
-- New forbidden patterns are identified
-- Preferred abstractions change
+## .claude/
 
 ### .claude/settings.local.json
 
@@ -188,15 +166,12 @@ Instructions for GitHub Copilot coding agent when working in this repository.
 - Phase-based workflow and completion protocol
 - Key documentation files to reference
 - Files and directories that should never be modified
-- Git commands, testing patterns, and conventions
 - Architectural boundaries and multi-LLM support
-- Top rules for success
 
 **What Does NOT Go Inside**
 - Temporary instructions
 - Code samples
 - Project-specific business logic
-- Implementation details
 
 **Audience**
 GitHub Copilot coding agent (LLM).
@@ -210,7 +185,6 @@ Infrequent. Updated when repository development practices or structure materiall
 - Phase completion protocol changes
 - Repository structure changes in ways that affect agent behavior
 - New authoritative files are added
-- Development workflows or conventions change
 
 ---
 
@@ -301,7 +275,7 @@ Extremely rare. Changes imply deep refactors.
 Canonical definitions of conceptual and data models.
 
 **What Goes Inside**
-- Mental models (Agent, Role, Directive, Artifact)
+- Mental models
 - Data model descriptions
 - Relationships between concepts
 
@@ -344,70 +318,9 @@ Humans and LLMs reviewing project trajectory.
 Append-only. New entry per assessment.
 
 **Update Triggers**
-- User invokes `/health` or `codebase health check`
+- User invokes `/codebase-health` or `codebase health check`
 - Major milestone completed (optional)
 - Before significant architectural changes (optional)
-
-### docs/handoff.md
-
-**Purpose**
-Reference document for building business logic on top of this infrastructure.
-
-**What Goes Inside**
-- Layer inventory and purpose
-- Code examples for using each layer
-- Environment variable reference
-- Quick start for forking
-- Integration patterns
-
-**What Does NOT Go Inside**
-- Business logic
-- Agent implementations
-- Prompts
-
-**Audience**
-Developers (human or LLM) building on top of this infrastructure.
-
-**Update Cadence**
-Updated when infrastructure APIs change significantly.
-
-**Update Triggers**
-- New infrastructure layer is added
-- Existing layer API changes
-- New integration patterns are established
-
----
-
-### docs/how-to-build-on-top.md
-
-**Purpose**
-Authoritative guide for building production systems on top of this infrastructure.
-
-**What Goes Inside**
-- Integration model (fork vs dependency)
-- Architectural rules (non-negotiable)
-- How to add cognition (agents)
-- How to add business logic (modules)
-- Memory usage rules
-- Recommended product repo structure
-
-**What Does NOT Go Inside**
-- Implementation details
-- Code examples (those go in handoff.md)
-- Phase-specific content
-
-**Audience**
-Architects and developers planning to build on this infrastructure.
-
-**Update Cadence**
-Rare. This is a constitutional document.
-
-**Update Triggers**
-- Architectural rules change
-- Integration model changes
-- New forbidden patterns identified
-
----
 
 ### docs/stubs.md
 
@@ -437,8 +350,6 @@ Updated whenever stubs are added or replaced.
 - Existing stub is replaced with real implementation
 - Stub scope or replacement plan changes
 
----
-
 ### docs/artifacts.md
 
 **Purpose**
@@ -467,8 +378,6 @@ Updated whenever artifact types are added.
 - Artifact schema changes
 - Retention policy changes
 
----
-
 ### docs/audits/phase-NN-audit.md
 
 **Purpose**
@@ -485,7 +394,7 @@ Machine-verifiable record that a phase passed its audit before being marked COMP
 **What Does NOT Go Inside**
 - Implementation details
 - Code
-- Full audit procedure (that's in .claude/skills/phase-audit/SKILL.md)
+- Full audit procedure (that's in `.claude/skills/phase-audit/SKILL.md`)
 
 **Audience**
 CI automation and humans verifying compliance.
@@ -541,7 +450,7 @@ Canonical definitions for terms and files.
 
 **What Goes Inside**
 - Term definitions
-- File-level contracts (this document)
+- File-level contracts
 
 **Audience**
 LLMs first.
@@ -595,296 +504,6 @@ Extremely rare.
 - ADR structure requirements change
 - New mandatory sections are identified
 - Phase completion protocol changes
-
----
-
-### adr-001-agent-runtime.md
-
-**Purpose**
-Records the decision to use a specific agent runtime approach.
-
-**What Goes Inside**
-- Context
-- Decision
-- Alternatives considered
-- Consequences
-
-**Audience**
-Future humans and LLMs.
-
-**Update Cadence**
-Never edited after acceptance (append new ADRs instead).
-
-**Update Triggers**
-- None. ADRs are immutable after acceptance.
-- New ADR files are created when significant architectural decisions are made.
-
-### adr-002-llm-native-repo-structure.md
-
-**Purpose**
-Explains why the repo is structured to be LLM-native.
-
-**What Goes Inside**
-- Problem statement
-- Chosen structure
-- Why alternatives were rejected
-
-**Audience**
-LLMs and maintainers.
-
-**Update Cadence**
-Immutable after acceptance.
-
-**Update Triggers**
-- None. ADRs are immutable after acceptance.
-
----
-
-## ai/design-time/ (Static AI Context)
-
-### assumptions.md
-
-**Purpose**
-Explicit assumptions the system is built on.
-
-**What Goes Inside**
-- Environmental assumptions
-- Organizational assumptions
-- Technical assumptions
-
-**Audience**
-LLMs.
-
-**Update Cadence**
-Only when assumptions change.
-
-**Update Triggers**
-- Environmental assumptions are invalidated
-- New technical constraints are discovered
-- Organizational context changes
-
-### boundaries.md
-
-**Purpose**
-Defines what the system will never do.
-
-**What Goes Inside**
-- Out-of-scope behaviors
-- Forbidden actions
-
-**Audience**
-LLMs.
-
-**Update Cadence**
-Rare.
-
-**Update Triggers**
-- New out-of-scope behaviors are identified
-- Forbidden actions are added based on incidents or reviews
-
-### context.md
-
-**Purpose**
-Persistent background context for reasoning.
-
-**What Goes Inside**
-- Business context
-- Historical context
-- Long-lived facts
-
-**Audience**
-LLMs.
-
-**Update Cadence**
-Occasional.
-
-**Update Triggers**
-- Business context changes materially
-- Historical context relevant to reasoning is discovered
-- Long-lived facts are established or invalidated
-
-### rules.md
-
-**Purpose**
-Design-time reasoning rules for agents.
-
-**What Goes Inside**
-- Reasoning constraints
-- Prohibited inference patterns
-
-**Audience**
-LLMs.
-
-**Update Cadence**
-Rare.
-
-**Update Triggers**
-- Agent reasoning produces incorrect outputs due to missing constraints
-- New prohibited inference patterns are identified
-
----
-
-## ai/runtime/ (Operational AI Contracts)
-
-### contracts/directive.md
-
-**Purpose**
-Defines the directive schema and semantics.
-
-**What Goes Inside**
-- Fields
-- Meaning
-- Constraints
-
-**Audience**
-LLMs and execution systems.
-
-**Update Cadence**
-Careful, versioned changes only.
-
-**Update Triggers**
-- Directive schema is modified in code
-- New directive fields are added
-- Directive semantics are clarified
-
-### contracts/evaluation.md
-
-**Purpose**
-Defines how outcomes are evaluated.
-
-**What Goes Inside**
-- Evaluation dimensions
-- Inputs/outputs
-- Scoring philosophy
-
-**Audience**
-Evaluator agents.
-
-**Update Cadence**
-Moderate.
-
-**Update Triggers**
-- Evaluation dimensions are added or modified
-- Scoring philosophy changes
-- New evaluation inputs or outputs are defined
-
-### contracts/safety.md
-
-**Purpose**
-Defines runtime safety constraints.
-
-**What Goes Inside**
-- Hard stops
-- Escalation conditions
-
-**Audience**
-LLMs and orchestration logic.
-
-**Update Cadence**
-Rare and conservative.
-
-**Update Triggers**
-- New hard stops are identified
-- Escalation conditions are modified
-- Safety incidents require new constraints
-
-### evaluation/scoring.md
-
-**Purpose**
-Concrete scoring mechanics.
-
-**What Goes Inside**
-- Scoring formulas
-- Weights
-- Normalization
-
-**Audience**
-Evaluator agents.
-
-**Update Cadence**
-Iterative.
-
-**Update Triggers**
-- Scoring formulas are adjusted
-- Weights are rebalanced
-- Normalization methods change
-
-### roles/executive.md, planner.md, supervisor.md
-
-**Purpose**
-Defines responsibilities and scope for each role.
-
-**What Goes Inside**
-- Role mandate
-- Inputs/outputs
-- What the role is accountable for
-
-**Audience**
-LLMs.
-
-**Update Cadence**
-Infrequent.
-
-**Update Triggers**
-- Role responsibilities are redefined
-- Role inputs or outputs change
-- Accountability boundaries shift
-
----
-
-## prompts/
-
-**Purpose**
-Reusable prompt components.
-
-**Expectation**
-Prompts are not logic. They are configuration.
-
-**Update Triggers**
-- Prompt components are added, modified, or removed
-- Prompt structure changes
-
----
-
-## src/
-
-**Purpose**
-Executable system code.
-
-Markdown generally does not belong here, except for implementation guides in extensible infrastructure directories.
-
-**Update Triggers**
-- None for most of src/.
-- See exceptions below.
-
-### src/infra/llm/README.md
-
-**Purpose**
-Implementation guide for adding new LLM providers.
-
-**What Goes Inside**
-- Provider implementation patterns
-- Required interface and behaviors
-- Error taxonomy reference
-- Testing requirements
-- What does NOT belong in this directory
-
-**What Does NOT Go Inside**
-- Authoritative contract rules (those go in `docs/contracts.md`)
-- Agent logic or prompts
-- Business requirements
-
-**Audience**
-Developers (human or LLM) implementing new providers.
-
-**Update Cadence**
-When provider patterns change.
-
-**Update Triggers**
-- New LLM provider added
-- Provider interface changes
-- Error taxonomy changes
-- Testing requirements change
 
 ---
 
@@ -1003,46 +622,41 @@ Markdown here should be instructional only if present.
 
 ---
 
-## Operational / Personal Reference Documentation
+## Adding New Entries to This Glossary
 
-### HOW-TO-USE-DOCKER.md
+When your project introduces new directories or files, add an entry following this template:
+
+```markdown
+### path/to/new-file.md
 
 **Purpose**
-Personal, operator-facing reference for using Docker in this repository.
-
-This file exists to support a novice Docker user (the primary maintainer) and
-documents practical commands, workflows, and reminders needed to operate the
-development environment.
+[What this file is responsible for]
 
 **What Goes Inside**
-- Docker and Docker Compose commands used in this repo
-- Explanations written for future self
-- Common mistakes and fixes
-- Local environment notes
+- [Content type 1]
+- [Content type 2]
 
 **What Does NOT Go Inside**
-- System architecture
-- Design rationale
-- Phase decisions
-- Enforcement rules
-- Anything intended as canonical system documentation
+- [Excluded content type 1]
+- [Excluded content type 2]
 
 **Audience**
-Primary maintainer (human) only.
-
-LLMs may reference this file for operational assistance, but must not treat it
-as authoritative architecture or system intent.
+[Primary audience]. [Secondary audience].
 
 **Update Cadence**
-Ad hoc.
-
-Updated whenever the maintainer learns something new or encounters friction.
+[How often this file changes]
 
 **Update Triggers**
-- Docker commands change
-- Docker Compose services change
-- A previously confusing workflow becomes clear
-- The maintainer needs reminders or clarification
+- [Event that requires this file to be updated]
+- [Another event]
+```
+
+Common directory patterns you may add as your project grows:
+
+- **`ai/design-time/`** — Static context files (assumptions, boundaries, rules) for LLM reasoning
+- **`ai/runtime/`** — Operational contracts (directives, evaluation, safety, roles)
+- **`prompts/`** — Reusable prompt components (configuration, not logic)
+- **`src/`** — Executable system code (markdown generally does not belong here except for implementation guides)
 
 ---
 
@@ -1083,9 +697,6 @@ This section defines the procedure an LLM must follow after completing an implem
 | New term introduced                | `docs/glossary/glossary.md`                  |
 | New markdown file added            | `docs/glossary/markdown-glossary.md`         |
 | Architectural decision made        | New ADR in `docs/decisions/`                 |
-| Role responsibilities changed      | `ai/runtime/roles/*.md`                      |
-| Directive schema changed           | `ai/runtime/contracts/directive.md`          |
-| Operational / personal reference added | `docs/glossary/markdown-glossary.md`     |
 | New stub/NoOp created              | `docs/stubs.md`                              |
 | Stub replaced with real impl       | `docs/stubs.md`                              |
 | New artifact type introduced       | `docs/artifacts.md`                          |

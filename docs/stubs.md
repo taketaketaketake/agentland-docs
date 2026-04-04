@@ -1,6 +1,10 @@
 # Stub Registry
 
-> This document is the **authoritative registry** of all stubbed components in the system.
+> This document is NOT an implementation plan.
+> It does not authorize code changes or execution.
+> All implementation requires an approved entry in `implementation-plan.md`.
+
+This document is the **authoritative registry** of all stubbed components in the system.
 
 Every stub must have:
 - A documented reason for existing
@@ -10,6 +14,21 @@ Every stub must have:
 **No stub may exist without an entry here.**
 
 Phase audits FAIL if a NoOp/stub exists without a corresponding entry in this registry.
+
+---
+
+## [Category Name]
+
+### [Stub Name]
+
+| Field | Value |
+|-------|-------|
+| **Location** | `path/to/stub.py` |
+| **Type** | NoOp / Stub / Mock |
+| **Why Stubbed** | [Reason] |
+| **Replaced By** | [Real implementation] |
+| **Target Phase** | Phase N |
+| **ADR** | `docs/decisions/adr-NNN.md` |
 
 ---
 
@@ -44,5 +63,4 @@ When replacing a stub:
 
 | Category | Stub Count | Permanent | Replaced | To Replace |
 |----------|------------|-----------|----------|------------|
-
-<!-- Update this table as stubs are added or replaced -->
+| [Category] | 0 | 0 | 0 | 0 |

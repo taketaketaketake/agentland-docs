@@ -1,6 +1,10 @@
 # Artifact Taxonomy
 
-> This document is the **authoritative registry** of all artifact types in the system.
+> This document is NOT an implementation plan.
+> It does not authorize code changes or execution.
+> All implementation requires an approved entry in `implementation-plan.md`.
+
+This document is the **authoritative registry** of all artifact types in the system.
 
 Every artifact type must have:
 - A defined producer (what creates it)
@@ -12,21 +16,17 @@ Every artifact type must have:
 
 ---
 
-<!-- Example artifact entry:
-
 ## [Category] Artifacts
 
 ### [artifact_type_name]
 
-| | |
-|---|---|
-| **Producer** | [What creates this artifact] |
-| **Lifecycle Phase** | [When it's created] |
-| **Created When** | [Trigger condition] |
-| **Schema** | [Fields] |
-| **Retention** | [How long to keep] |
-
--->
+| Field | Value |
+|-------|-------|
+| **Producer** | [what creates this artifact] |
+| **Lifecycle Phase** | Phase N |
+| **Created When** | [trigger condition] |
+| **Schema** | `field1`, `field2`, `field3` |
+| **Retention** | Permanent / Temporary / [duration] |
 
 ---
 
@@ -46,5 +46,5 @@ When introducing a new artifact type:
 
 | Category | Artifact Types | Count |
 |----------|---------------|-------|
-
-<!-- Update this table as artifact types are added -->
+| [Category] | [types] | 0 |
+| **Total** | | **0** |

@@ -187,13 +187,8 @@ Currently, this is a documentation repository with no code to test. If testing i
 
 **Important:** Do not assume a single LLM.
 
-All designs must support multiple models with differing capabilities:
-- Postgres = truth
-- Directives = frozen intent
-- Temporal = coordination and durability
-- Execution modules = bounded action
-- Agents = replaceable reasoning components
-- Memory = external, inspectable, persistent
+All designs must support multiple models with differing capabilities.
+Use the mental model defined in `CLAUDE.md` for layer responsibilities.
 
 Never collapse these layers.
 
@@ -201,11 +196,7 @@ Never collapse these layers.
 
 ## Architectural Boundaries
 
-**Sacred Rule:** Respect these boundaries at all times:
-
-- **Execution code must not reason**
-- **Cognition must not execute**
-- **Temporal must not decide**
+**Sacred Rule:** Respect the boundaries defined in `CLAUDE.md` at all times.
 
 These are fundamental separation of concerns.
 

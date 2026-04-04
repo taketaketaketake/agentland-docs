@@ -1,6 +1,6 @@
 # Interface Contracts
 
-> ⚠️ **This document is NOT an implementation plan.**
+> This document is NOT an implementation plan.
 > It does not authorize code changes or execution.
 > All implementation requires an approved entry in `implementation-plan.md`.
 
@@ -11,10 +11,29 @@ An interface is "complete" when:
 - All input types are bounded
 - All output types are frozen
 - All error types are enumerated
-- Behavior iss deterministic (given same input → same output)
+- Behavior is deterministic (given same input → same output)
 
 ---
 
+## [Interface Name]
+
+| Field | Value |
+|-------|-------|
+| **Location** | `path/to/interface.py` |
+| **Status** | COMPLETE / IN_PROGRESS / NOT_STARTED |
+| **Phase** | Phase N |
+
+### Methods
+
+| Method | Input | Output | Status |
+|--------|-------|--------|--------|
+| `method_name()` | `InputType` | `OutputType` | Defined |
+
+### Error Types
+
+| Error | Meaning |
+|-------|---------|
+| `error_type` | [description] |
 
 ---
 
