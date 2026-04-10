@@ -507,6 +507,84 @@ Extremely rare.
 
 ---
 
+## .claude/hooks/ (Claude Code Enforcement Hooks)
+
+**Purpose**
+Shell scripts that Claude Code executes automatically on specific events.
+Unlike skills (which rely on LLM compliance), hooks are enforced by the runtime.
+
+### .claude/hooks/session-context.sh
+
+**Purpose**
+Loads the glossary routing table into Claude's context at session start.
+
+**Event:** `SessionStart` (startup)
+
+**Behavior:** Extracts the Documentation Update Protocol section from `docs/glossary/markdown-glossary.md` and injects it as context. Claude sees the routing table before doing any work.
+
+**Update Triggers**
+- Routing table structure changes
+- New doc trigger categories are added
+
+### .claude/hooks/check-doc-triggers.sh
+
+**Purpose**
+Warns Claude after source file edits if glossary-triggered docs weren't updated.
+
+**Event:** `PostToolUse` (Edit, Write)
+
+**Behavior:** Maps the edited file path against a routing table. If the edit triggers docs that haven't been modified in the current git session, emits a warning as additional context.
+
+**Update Triggers**
+- New source-to-doc routing rules are added
+- Routing table patterns change
+
+### .claude/hooks/pre-commit-docs.sh
+
+**Purpose**
+Blocks git commits if documentation is incomplete. This is the hard gate.
+
+**Event:** `PreToolUse` (Bash, filtered to `git commit`)
+
+**Blocks if:**
+- A phase is marked COMPLETE without a corresponding `docs/audits/phase-NN-audit.md`
+- Source files contain stub markers without entries in `docs/stubs.md`
+- Interface files changed without `docs/contracts.md` being updated
+
+**Update Triggers**
+- New commit-blocking rules are added
+- Stub detection patterns change
+- Phase completion detection changes
+
+---
+
+## .claude/settings.json (Hook Wiring)
+
+**Purpose**
+Wires Claude Code hooks to their trigger events.
+
+**What Goes Inside**
+- Hook event mappings (SessionStart, PostToolUse, PreToolUse)
+- Matcher patterns (which tools trigger which hooks)
+- Hook configuration (type, command, statusMessage)
+
+**What Does NOT Go Inside**
+- Local user preferences (those go in settings.local.json)
+- Permission rules
+
+**Audience**
+Claude Code runtime.
+
+**Update Cadence**
+Updated when hooks are added or event wiring changes.
+
+**Update Triggers**
+- New hook script is added
+- Hook event mapping changes
+- Matcher patterns need updating
+
+---
+
 ## .claude/skills/ (LLM-Enforced Procedures)
 
 **Purpose**

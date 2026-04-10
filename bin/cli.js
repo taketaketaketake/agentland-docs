@@ -154,6 +154,19 @@ async function init(force = false, skipConfigure = false) {
     copyRecursive(srcPath, destPath, force);
   }
 
+  // Make hook scripts executable
+  const hooksDir = path.join(process.cwd(), '.claude', 'hooks');
+  if (fs.existsSync(hooksDir)) {
+    const hookFiles = fs.readdirSync(hooksDir).filter(f => f.endsWith('.sh'));
+    for (const hook of hookFiles) {
+      const hookPath = path.join(hooksDir, hook);
+      fs.chmodSync(hookPath, 0o755);
+    }
+    if (hookFiles.length > 0) {
+      console.log(`\n  Made ${hookFiles.length} hook script(s) executable.`);
+    }
+  }
+
   console.log('\nDone! Documentation templates have been added to your project.');
 
   if (skipConfigure) {

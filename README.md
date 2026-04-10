@@ -25,8 +25,8 @@ Particularly useful for teams building agentic systems where governance, auditab
                     ┌───────────────────────────┼──────────────────────────┐
                     │                           │                          │
         ┌───────────▼───────────┐   ┌───────────▼──────────┐   ┌──────────▼─────────┐
-        │     README.md         │   │   CLAUDE.md          │   │ implementation-    │
-        │                       │   │                      │   │ plan.md            │
+        │     README.md         │   │   CLAUDE.md          │   │ plan-template.md   │
+        │                       │   │                      │   │                    │
         │  - Entry point        │   │  - AI instructions   │   │                    │
         │  - Overview           │   │  - Phase protocol    │   │  - Phase tracking  │
         └───────────────────────┘   └──────────┬───────────┘   └─────────┬──────────┘
@@ -83,7 +83,12 @@ See [docs/markdown-map.md](docs/markdown-map.md) for the full relationship analy
 ```
 .
 ├── .claude/                    # Claude Code configuration
-│   ├── settings.local.json     # Local Claude settings
+│   ├── settings.json           # Hook wiring (SessionStart, PostToolUse, PreToolUse)
+│   ├── settings.local.json     # Local Claude settings (gitignored)
+│   ├── hooks/                  # Claude Code hooks (enforcement)
+│   │   ├── session-context.sh  # Loads glossary routing table on session start
+│   │   ├── check-doc-triggers.sh  # Warns after source edits if docs need updating
+│   │   └── pre-commit-docs.sh # Blocks commits if docs are incomplete
 │   └── skills/                 # LLM-enforced procedures (Claude Code convention)
 │       ├── codebase-health/    # Skill for monitoring codebase health
 │       │   └── SKILL.md        # Skill entrypoint with frontmatter
@@ -124,6 +129,34 @@ See [docs/markdown-map.md](docs/markdown-map.md) for the full relationship analy
         ├── commit-msg          # Commit message validation hook
         └── pre-commit          # Pre-commit validation hook
 ```
+
+## Enforcement
+
+The framework includes three layers of enforcement that prevent LLMs from ignoring documentation:
+
+### Claude Code Hooks (automatic)
+
+Shipped via `npx spec-driven-docs init`. No setup required.
+
+| Hook | Event | Behavior |
+|------|-------|----------|
+| `session-context.sh` | SessionStart | Loads the glossary routing table into Claude's context so it knows which docs to update |
+| `check-doc-triggers.sh` | PostToolUse (Edit/Write) | After any source file edit, warns Claude if glossary-triggered docs weren't updated |
+| `pre-commit-docs.sh` | PreToolUse (git commit) | **Blocks commits** if: phase marked COMPLETE without audit file, stubs exist without registry entry, or interface files changed without contracts.md update |
+
+### Claude Code Skills (LLM-enforced)
+
+| Skill | Trigger | Behavior |
+|-------|---------|----------|
+| `phase-audit` | Before marking any phase COMPLETE | Verifies documentation updates, ADRs, and validation scripts. Hard gate. |
+| `codebase-health` | On demand (`/codebase-health`) | Structured assessment appended to health-log.md |
+
+### Git Hooks (local)
+
+| Hook | Behavior |
+|------|----------|
+| `pre-commit` | Blocks commits containing AI co-authorship attributions in staged files |
+| `commit-msg` | Blocks commits containing AI co-authorship attributions in commit messages |
 
 ## Purpose
 
