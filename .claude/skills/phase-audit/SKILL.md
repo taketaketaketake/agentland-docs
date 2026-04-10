@@ -137,7 +137,7 @@ Template validation applies only to ADR-010 and later.
 For the phase under audit:
 
 1. **Identify the expected validation script(s)**
-   - Check `scripts/validate_*.py` for a script corresponding to the phase
+   - Check `scripts/validate_*` for a script corresponding to the phase
    - Phase-to-script mapping should be evident from script docstrings or names
 
 2. **Verify the script(s) exist**
@@ -235,7 +235,7 @@ If verdict is PASS, create an audit file at `docs/audits/phase-NN-audit.md` cont
 
 | Script | Result |
 |--------|--------|
-| `scripts/validate_xxx.py` | N/N passed |
+| `scripts/validate_xxx.sh` | N/N passed |
 
 ## ADR
 

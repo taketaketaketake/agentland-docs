@@ -526,36 +526,6 @@ Loads the glossary routing table into Claude's context at session start.
 - Routing table structure changes
 - New doc trigger categories are added
 
-### .claude/hooks/check-doc-triggers.sh
-
-**Purpose**
-Warns Claude after source file edits if glossary-triggered docs weren't updated.
-
-**Event:** `PostToolUse` (Edit, Write)
-
-**Behavior:** Maps the edited file path against a routing table. If the edit triggers docs that haven't been modified in the current git session, emits a warning as additional context.
-
-**Update Triggers**
-- New source-to-doc routing rules are added
-- Routing table patterns change
-
-### .claude/hooks/pre-commit-docs.sh
-
-**Purpose**
-Blocks git commits if documentation is incomplete. This is the hard gate.
-
-**Event:** `PreToolUse` (Bash, filtered to `git commit`)
-
-**Blocks if:**
-- A phase is marked COMPLETE without a corresponding `docs/audits/phase-NN-audit.md`
-- Source files contain stub markers without entries in `docs/stubs.md`
-- Interface files changed without `docs/contracts.md` being updated
-
-**Update Triggers**
-- New commit-blocking rules are added
-- Stub detection patterns change
-- Phase completion detection changes
-
 ---
 
 ## .claude/settings.json (Hook Wiring)
@@ -564,8 +534,7 @@ Blocks git commits if documentation is incomplete. This is the hard gate.
 Wires Claude Code hooks to their trigger events.
 
 **What Goes Inside**
-- Hook event mappings (SessionStart, PostToolUse, PreToolUse)
-- Matcher patterns (which tools trigger which hooks)
+- Hook event mappings (SessionStart)
 - Hook configuration (type, command, statusMessage)
 
 **What Does NOT Go Inside**

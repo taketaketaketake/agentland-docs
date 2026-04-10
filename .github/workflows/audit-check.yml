@@ -158,28 +158,3 @@ jobs:
 
           echo "Implementation plan consistency verified."
 
-      - name: Check sacred boundary (src/ does not import ai/runtime/)
-        run: |
-          echo "Checking sacred boundary constraint..."
-
-          # src/ must never import from ai/runtime/
-          # This boundary ensures infrastructure remains agent-agnostic
-          VIOLATIONS=""
-
-          if grep -r "from ai\.runtime" src/ --include="*.py" 2>/dev/null; then
-            VIOLATIONS="found"
-          fi
-
-          if grep -r "import ai\.runtime" src/ --include="*.py" 2>/dev/null; then
-            VIOLATIONS="found"
-          fi
-
-          if [ -n "$VIOLATIONS" ]; then
-            echo ""
-            echo "ERROR: Sacred boundary violation detected."
-            echo "src/ must never import from ai/runtime/"
-            echo "Infrastructure code must not depend on agent contracts."
-            exit 1
-          fi
-
-          echo "Sacred boundary intact."

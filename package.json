@@ -7,8 +7,9 @@
   },
   "files": [
     "bin",
-    "templates",
-    "templates/.claude"
+    "CLAUDE.md",
+    "docs",
+    ".claude"
   ],
   "keywords": [
     "documentation",

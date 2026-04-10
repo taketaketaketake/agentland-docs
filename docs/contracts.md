@@ -19,7 +19,7 @@ An interface is "complete" when:
 
 | Field | Value |
 |-------|-------|
-| **Location** | `path/to/interface.py` |
+| **Location** | `path/to/interface` |
 | **Status** | COMPLETE / IN_PROGRESS / NOT_STARTED |
 | **Phase** | Phase N |
 

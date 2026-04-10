@@ -4,7 +4,7 @@ const fs = require('fs');
 const path = require('path');
 const readline = require('readline');
 
-const TEMPLATES_DIR = path.join(__dirname, '..', 'templates');
+const PKG_ROOT = path.join(__dirname, '..');
 const COMMANDS = ['init', 'help'];
 
 function printHelp() {
@@ -219,15 +219,19 @@ function copyRecursive(src, dest, force = false) {
 async function init(force = false, skipConfigure = false) {
   console.log('\nInitializing spec-driven documentation...\n');
 
-  if (!fs.existsSync(TEMPLATES_DIR)) {
-    console.error('Error: Templates directory not found. Package may be corrupted.');
-    process.exit(1);
-  }
+  // Files and directories to copy from package root
+  const COPY_ENTRIES = [
+    'CLAUDE.md',
+    'docs',
+    '.claude',
+  ];
 
-  const entries = fs.readdirSync(TEMPLATES_DIR);
-
-  for (const entry of entries) {
-    const srcPath = path.join(TEMPLATES_DIR, entry);
+  for (const entry of COPY_ENTRIES) {
+    const srcPath = path.join(PKG_ROOT, entry);
+    if (!fs.existsSync(srcPath)) {
+      console.warn(`  WARN: ${entry} not found in package, skipping.`);
+      continue;
+    }
     const destPath = path.join(process.cwd(), entry);
     copyRecursive(srcPath, destPath, force);
   }

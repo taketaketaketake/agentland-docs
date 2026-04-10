@@ -23,7 +23,7 @@ Phase audits FAIL if a NoOp/stub exists without a corresponding entry in this re
 
 | Field | Value |
 |-------|-------|
-| **Location** | `path/to/stub.py` |
+| **Location** | `path/to/stub` |
 | **Type** | NoOp / Stub / Mock |
 | **Why Stubbed** | [Reason] |
 | **Replaced By** | [Real implementation] |
@@ -36,7 +36,7 @@ Phase audits FAIL if a NoOp/stub exists without a corresponding entry in this re
 
 The phase audit skill must verify:
 
-1. Every file matching `**/noop*.py` or `**/*_stub*.py` has a registry entry
+1. Every file matching `**/noop*` or `**/*_stub*` has a registry entry
 2. Every registry entry has all required fields
 3. Every registry entry references a valid ADR
 
