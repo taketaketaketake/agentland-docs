@@ -14,3 +14,9 @@ Thumbs.db
 .vscode/
 *.swp
 *.swo
+
+# Doc hook suppressions (session-local)
+.doc-ok
+
+# Local Claude settings
+.claude/settings.local.json

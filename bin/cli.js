@@ -105,6 +105,78 @@ async function configure() {
   }
 }
 
+function mergeSettingsJson(srcPath, destPath) {
+  /**
+   * Merge hook configurations instead of overwriting.
+   * Appends new hook entries, skips duplicates (matched by command path).
+   */
+  const srcSettings = JSON.parse(fs.readFileSync(srcPath, 'utf8'));
+
+  if (!fs.existsSync(destPath)) {
+    const parentDir = path.dirname(destPath);
+    if (!fs.existsSync(parentDir)) {
+      fs.mkdirSync(parentDir, { recursive: true });
+    }
+    fs.writeFileSync(destPath, JSON.stringify(srcSettings, null, 2) + '\n');
+    console.log(`  COPY: ${path.relative(process.cwd(), destPath)}`);
+    return;
+  }
+
+  let existing;
+  try {
+    existing = JSON.parse(fs.readFileSync(destPath, 'utf8'));
+  } catch {
+    // Malformed JSON — overwrite
+    fs.writeFileSync(destPath, JSON.stringify(srcSettings, null, 2) + '\n');
+    console.log(`  COPY: ${path.relative(process.cwd(), destPath)} (replaced malformed file)`);
+    return;
+  }
+
+  if (!srcSettings.hooks) return;
+  if (!existing.hooks) existing.hooks = {};
+
+  let added = 0;
+  for (const [event, matchers] of Object.entries(srcSettings.hooks)) {
+    if (!existing.hooks[event]) {
+      existing.hooks[event] = matchers;
+      added += matchers.reduce((n, m) => n + m.hooks.length, 0);
+      continue;
+    }
+
+    // Collect all existing command strings for dedup
+    const existingCommands = new Set();
+    for (const m of existing.hooks[event]) {
+      for (const h of m.hooks) {
+        if (h.command) existingCommands.add(h.command);
+      }
+    }
+
+    for (const matcher of matchers) {
+      for (const hook of matcher.hooks) {
+        if (hook.command && existingCommands.has(hook.command)) continue;
+
+        // Find existing matcher group with same matcher string
+        const existingMatcher = existing.hooks[event].find(
+          m => m.matcher === matcher.matcher
+        );
+        if (existingMatcher) {
+          existingMatcher.hooks.push(hook);
+        } else {
+          existing.hooks[event].push({ matcher: matcher.matcher, hooks: [hook] });
+        }
+        added++;
+      }
+    }
+  }
+
+  fs.writeFileSync(destPath, JSON.stringify(existing, null, 2) + '\n');
+  if (added > 0) {
+    console.log(`  MERGE: ${path.relative(process.cwd(), destPath)} (+${added} hook(s))`);
+  } else {
+    console.log(`  SKIP: ${path.relative(process.cwd(), destPath)} (hooks already present)`);
+  }
+}
+
 function copyRecursive(src, dest, force = false) {
   const stats = fs.statSync(src);
 
@@ -122,6 +194,12 @@ function copyRecursive(src, dest, force = false) {
       );
     }
   } else {
+    // Special handling: merge settings.json instead of overwriting
+    if (path.basename(src) === 'settings.json' && src.includes('.claude')) {
+      mergeSettingsJson(src, dest);
+      return;
+    }
+
     if (fs.existsSync(dest) && !force) {
       console.log(`  SKIP: ${path.relative(process.cwd(), dest)} (already exists, use --force to overwrite)`);
       return;

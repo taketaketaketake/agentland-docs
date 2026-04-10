@@ -1,94 +1,194 @@
-#!/bin/bash
-#
-# PostToolUse hook: fires after Edit/Write on source files.
-# Checks the glossary routing table and warns Claude if triggered docs
-# weren't modified in this session.
-#
-# Exit 0 always (PostToolUse can't block). Warnings go to stdout
-# as additionalContext so Claude sees them and can self-correct.
-#
+#!/usr/bin/env python3
+"""
+PostToolUse hook (Edit/Write): two-directional doc enforcement.
 
-set -e
+1. Source file edited → parse glossary routing table, warn if triggered docs
+   aren't updated.
+2. Doc file edited without source changes → warn to verify source alignment.
 
-INPUT=$(cat)
-PROJECT_DIR=$(echo "$INPUT" | jq -r '.cwd')
-FILE_PATH=$(echo "$INPUT" | jq -r '.tool_input.file_path // empty')
+Supports .doc-ok to suppress false positives (one doc path per line).
+Exit 0 always — PostToolUse cannot block.
+"""
 
-# Only care about source file edits
-if [ -z "$FILE_PATH" ]; then
-  exit 0
-fi
+import sys, os, re, json, subprocess
 
-# Normalize to relative path
-REL_PATH="${FILE_PATH#$PROJECT_DIR/}"
 
-# ─── Routing table ───────────────────────────────────────────────
-# Maps source path patterns to docs that SHOULD be updated.
-# Derived from docs/glossary/markdown-glossary.md routing summary.
-# Add project-specific routes below.
-# ─────────────────────────────────────────────────────────────────
+def main():
+    data = json.load(sys.stdin)
+    project_dir = data.get("cwd", "")
+    file_path = data.get("tool_input", {}).get("file_path", "")
 
-declare -A ROUTES
+    if not file_path or not project_dir:
+        return
 
-# Source code changes
-ROUTES["src/"]="docs/architecture.md docs/contracts.md"
+    rel_path = os.path.relpath(file_path, project_dir)
 
-# Schema / model changes
-ROUTES["models"]="docs/models.md"
-ROUTES["schema"]="docs/models.md"
-ROUTES["migration"]="docs/models.md"
+    # Load .doc-ok suppressions
+    suppressed = load_doc_ok(project_dir)
 
-# Stub patterns
-ROUTES["stub"]="docs/stubs.md"
-ROUTES["noop"]="docs/stubs.md"
-ROUTES["STUB"]="docs/stubs.md"
+    if is_doc_file(rel_path):
+        # Direction 2: doc edited → remind to verify source alignment
+        if not rel_path.startswith("docs/audits/") and not rel_path.startswith("docs/plan/"):
+            print(
+                f"NOTE: You edited {rel_path}. "
+                f"Verify it accurately reflects the current source code."
+            )
+    elif not is_config_file(rel_path):
+        # Direction 1: source file edited → check glossary routing triggers
+        triggered = find_triggered_docs(project_dir, rel_path)
+        triggered = [d for d in triggered if d not in suppressed]
 
-# Interface / protocol changes
-ROUTES["interface"]="docs/contracts.md"
-ROUTES["protocol"]="docs/contracts.md"
+        if triggered:
+            docs_list = "\n".join(f"  - {d}" for d in triggered)
+            print(
+                f"WARNING: Edit to {rel_path} may require documentation updates.\n\n"
+                f"Docs that may need updating (per glossary routing table):\n"
+                f"{docs_list}\n\n"
+                f"If these don't need changes, add paths to .doc-ok (one per line)."
+            )
 
-# Plan changes
-ROUTES["docs/plan/"]="docs/plan/plan-template.md"
 
-# New markdown files
-ROUTES[".md"]="docs/glossary/markdown-glossary.md"
+# ── Routing table parser ─────────────────────────────────────────
 
-# ─── Check which routes match ────────────────────────────────────
 
-TRIGGERED_DOCS=()
-SEEN=()
+def parse_routing_table(glossary_path):
+    """Extract the Routing Summary table from markdown-glossary.md.
 
-for pattern in "${!ROUTES[@]}"; do
-  if [[ "$REL_PATH" == *"$pattern"* ]]; then
-    for doc in ${ROUTES[$pattern]}; do
-      # Deduplicate
-      if [[ ! " ${SEEN[*]} " =~ " ${doc} " ]]; then
-        SEEN+=("$doc")
-        # Check if the doc was modified in this git session
-        if [ -f "$PROJECT_DIR/$doc" ]; then
-          if ! git -C "$PROJECT_DIR" diff --name-only HEAD 2>/dev/null | grep -q "$doc"; then
-            if ! git -C "$PROJECT_DIR" diff --cached --name-only 2>/dev/null | grep -q "$doc"; then
-              TRIGGERED_DOCS+=("$doc")
-            fi
-          fi
-        fi
-      fi
-    done
-  fi
-done
+    Returns {change_type_string: [doc_file_paths]}.
+    """
+    if not os.path.exists(glossary_path):
+        return {}
 
-# ─── Output warning if docs need attention ───────────────────────
+    with open(glossary_path) as f:
+        content = f.read()
 
-if [ ${#TRIGGERED_DOCS[@]} -gt 0 ]; then
-  DOCS_LIST=$(printf "  - %s\n" "${TRIGGERED_DOCS[@]}")
-  cat <<EOF
-WARNING: The edit to $REL_PATH may require documentation updates.
+    routes = {}
+    in_table = False
+    for line in content.split("\n"):
+        if "Change Type" in line and "Files to Update" in line:
+            in_table = True
+            continue
+        if in_table and line.strip().startswith("|---"):
+            continue
+        if in_table and line.strip().startswith("|"):
+            cols = [c.strip() for c in line.split("|")[1:-1]]
+            if len(cols) >= 2:
+                change_type = cols[0].strip()
+                doc_files = re.findall(r"`([^`]+)`", cols[1])
+                if change_type and doc_files:
+                    routes[change_type] = doc_files
+        elif in_table:
+            break
 
-The following docs may need to be updated based on the glossary routing table:
-$DOCS_LIST
+    return routes
 
-Check docs/glossary/markdown-glossary.md for the full routing rules.
-EOF
-fi
 
-exit 0
+# ── Path → change type matching ──────────────────────────────────
+
+# Maps keywords in the glossary change type descriptions to file path
+# patterns that plausibly correspond. This is the only heuristic layer —
+# the doc file targets come from the glossary itself.
+CHANGE_KEYWORDS = {
+    "schema": ["schema", "migration", "alembic", "models", "database", "db"],
+    "infrastructure": ["infra", "service", "deploy", "docker", "compose"],
+    "invariant": ["invariant", "constraint"],
+    "stub": ["stub", "noop", "mock", "fake"],
+    "artifact": ["artifact"],
+    "interface": [
+        "interface",
+        "protocol",
+        "api",
+        "server",
+        "handler",
+        "route",
+        "endpoint",
+    ],
+    "markdown": [".md"],
+}
+
+
+def matches_change_type(path_lower, change_type_lower):
+    """Does this file path plausibly relate to this change type?"""
+    for category, keywords in CHANGE_KEYWORDS.items():
+        if category in change_type_lower:
+            if any(kw in path_lower for kw in keywords):
+                return True
+    return False
+
+
+def find_triggered_docs(project_dir, rel_path):
+    """Parse glossary, match path against routing table, return stale docs."""
+    glossary = os.path.join(project_dir, "docs", "glossary", "markdown-glossary.md")
+    routes = parse_routing_table(glossary)
+    if not routes:
+        return []
+
+    path_lower = rel_path.lower()
+    matched_docs = set()
+
+    for change_type, doc_files in routes.items():
+        if matches_change_type(path_lower, change_type.lower()):
+            matched_docs.update(doc_files)
+
+    # Filter to docs that haven't been modified in current git state
+    return sorted(
+        d for d in matched_docs
+        if os.path.exists(os.path.join(project_dir, d))
+        and not is_modified_in_git(project_dir, d)
+    )
+
+
+# ── Helpers ──────────────────────────────────────────────────────
+
+
+def is_doc_file(rel_path):
+    return rel_path.startswith("docs/")
+
+
+def is_config_file(rel_path):
+    return (
+        rel_path.startswith(".")
+        or rel_path.startswith("scripts/")
+        or rel_path == "CLAUDE.md"
+        or rel_path == "README.md"
+        or rel_path.endswith(".json")
+        or rel_path.endswith(".yml")
+        or rel_path.endswith(".yaml")
+        or rel_path.endswith(".toml")
+    )
+
+
+def load_doc_ok(project_dir):
+    path = os.path.join(project_dir, ".doc-ok")
+    if not os.path.exists(path):
+        return set()
+    with open(path) as f:
+        return {
+            line.strip()
+            for line in f
+            if line.strip() and not line.startswith("#")
+        }
+
+
+def is_modified_in_git(project_dir, doc_path):
+    for cmd in [
+        ["git", "diff", "--name-only", "HEAD"],
+        ["git", "diff", "--cached", "--name-only"],
+    ]:
+        try:
+            result = subprocess.run(
+                cmd, cwd=project_dir, capture_output=True, text=True, timeout=5
+            )
+            if doc_path in result.stdout:
+                return True
+        except (subprocess.TimeoutExpired, FileNotFoundError):
+            pass
+    return False
+
+
+if __name__ == "__main__":
+    try:
+        main()
+    except Exception:
+        pass  # Never crash — PostToolUse can't block anyway
+    sys.exit(0)

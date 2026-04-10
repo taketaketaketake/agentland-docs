@@ -1,33 +1,44 @@
-#!/bin/bash
-#
-# SessionStart hook: loads the glossary routing table into Claude's
-# context at the start of every session so it knows which docs to
-# update without being told.
-#
+#!/usr/bin/env python3
+"""
+SessionStart hook: injects the glossary routing table into Claude's context
+so it knows which docs to update before doing any work.
+"""
 
-set -e
+import sys, os, json, re
 
-INPUT=$(cat)
-PROJECT_DIR=$(echo "$INPUT" | jq -r '.cwd')
-GLOSSARY="$PROJECT_DIR/docs/glossary/markdown-glossary.md"
 
-if [ ! -f "$GLOSSARY" ]; then
-  exit 0
-fi
+def main():
+    data = json.load(sys.stdin)
+    project_dir = data.get("cwd", "")
+    glossary = os.path.join(project_dir, "docs", "glossary", "markdown-glossary.md")
 
-# Extract just the routing summary table — the compact version
-# of which docs to update for which change types.
-ROUTING=$(sed -n '/^## Documentation Update Protocol/,/^## /p' "$GLOSSARY" | head -n -1)
+    if not os.path.exists(glossary):
+        return
 
-if [ -n "$ROUTING" ]; then
-  cat <<EOF
-DOCUMENTATION ROUTING (from docs/glossary/markdown-glossary.md):
+    with open(glossary) as f:
+        content = f.read()
 
-$ROUTING
+    # Extract the Documentation Update Protocol section
+    match = re.search(
+        r"(## Documentation Update Protocol.*?)(?=\n## [^#]|\Z)",
+        content,
+        re.DOTALL,
+    )
+    if not match:
+        return
 
-You MUST check this routing table after making source code changes
-and update the triggered docs before committing.
-EOF
-fi
+    routing = match.group(1).strip()
+    print(
+        f"DOCUMENTATION ROUTING (from docs/glossary/markdown-glossary.md):\n\n"
+        f"{routing}\n\n"
+        f"You MUST check this routing table after making source code changes "
+        f"and update the triggered docs before committing."
+    )
 
-exit 0
+
+if __name__ == "__main__":
+    try:
+        main()
+    except Exception:
+        pass
+    sys.exit(0)

@@ -1,120 +1,199 @@
-#!/bin/bash
-#
-# PreToolUse hook: fires before git commit.
-# BLOCKS the commit (exit 2) if:
-#   1. A phase is marked COMPLETE without a corresponding audit file
-#   2. Source files with STUB/asyncio.sleep markers exist without docs/stubs.md entries
-#   3. Source files changed but glossary-triggered docs were not updated
-#
-# This is the hard gate. It cannot be bypassed by the LLM.
-#
+#!/usr/bin/env python3
+"""
+PreToolUse hook (Bash → git commit): hard gate on documentation completeness.
 
-set -e
+BLOCKS the commit (exit 2) if:
+  1. A phase is marked COMPLETE without a corresponding audit file
+  2. Staged source files contain stub markers without docs/stubs.md entries
+  3. Staged interface/protocol files changed without docs/contracts.md update
 
-INPUT=$(cat)
-PROJECT_DIR=$(echo "$INPUT" | jq -r '.cwd')
-COMMAND=$(echo "$INPUT" | jq -r '.tool_input.command // empty')
+Source files = anything not under docs/, .claude/, .github/, scripts/, or dotfiles.
+This avoids hardcoding src/ so it works with any project layout.
 
-# Only fire on git commit commands
-if [[ "$COMMAND" != *"git commit"* ]]; then
-  exit 0
-fi
+Exit 2 = block.  Exit 0 = allow.
+"""
 
-ERRORS=()
+import sys, os, re, json, subprocess, glob
 
-# ─── Check 1: Phase completion without audit ─────────────────────
-# If any phase in the plan is marked COMPLETE, there must be a
-# corresponding docs/audits/phase-NN-audit.md file.
 
-PLAN_FILE="$PROJECT_DIR/docs/plan/plan-template.md"
-if [ -f "$PLAN_FILE" ]; then
-  # Look for COMPLETE phases
-  while IFS= read -r line; do
-    PHASE_NUM=$(echo "$line" | grep -oE 'PHASE [0-9]+' | grep -oE '[0-9]+')
-    if [ -n "$PHASE_NUM" ]; then
-      AUDIT_FILE="$PROJECT_DIR/docs/audits/phase-${PHASE_NUM}-audit.md"
-      if [ ! -f "$AUDIT_FILE" ]; then
-        ERRORS+=("Phase $PHASE_NUM is marked COMPLETE but docs/audits/phase-${PHASE_NUM}-audit.md does not exist.")
-      fi
-    fi
-  done < <(grep -i 'COMPLETE' "$PLAN_FILE" | grep -i 'PHASE' 2>/dev/null || true)
-fi
+def main():
+    data = json.load(sys.stdin)
+    project_dir = data.get("cwd", "")
+    command = data.get("tool_input", {}).get("command", "")
 
-# Also check any other plan files in docs/plan/
-for plan in "$PROJECT_DIR"/docs/plan/*.md; do
-  [ -f "$plan" ] || continue
-  [ "$plan" = "$PLAN_FILE" ] && continue
-  while IFS= read -r line; do
-    PHASE_NUM=$(echo "$line" | grep -oE 'PHASE [0-9]+' | grep -oE '[0-9]+')
-    if [ -n "$PHASE_NUM" ]; then
-      AUDIT_FILE="$PROJECT_DIR/docs/audits/phase-${PHASE_NUM}-audit.md"
-      if [ ! -f "$AUDIT_FILE" ]; then
-        ERRORS+=("Phase $PHASE_NUM is marked COMPLETE in $(basename "$plan") but docs/audits/phase-${PHASE_NUM}-audit.md does not exist.")
-      fi
-    fi
-  done < <(grep -i 'COMPLETE' "$plan" | grep -i 'PHASE' 2>/dev/null || true)
-done
+    if "git commit" not in command:
+        sys.exit(0)
 
-# ─── Check 2: Stub registry completeness ────────────────────────
-# Scan staged source files for stub markers. Each must have an entry
-# in docs/stubs.md.
+    errors = []
 
-STUBS_FILE="$PROJECT_DIR/docs/stubs.md"
-STAGED_SRC=$(git -C "$PROJECT_DIR" diff --cached --name-only --diff-filter=d 2>/dev/null | grep -E '^src/' || true)
+    check_phase_audits(project_dir, errors)
+    staged_src = get_staged_source_files(project_dir)
+    check_stub_registry(project_dir, staged_src, errors)
+    check_interface_docs(project_dir, staged_src, errors)
 
-if [ -n "$STAGED_SRC" ] && [ -f "$STUBS_FILE" ]; then
-  while IFS= read -r src_file; do
-    FULL_PATH="$PROJECT_DIR/$src_file"
-    [ -f "$FULL_PATH" ] || continue
+    if errors:
+        msg = "\n".join(f"  - {e}" for e in errors)
+        print(
+            f"\n{'=' * 42}\n"
+            f"  COMMIT BLOCKED: Documentation Incomplete\n"
+            f"{'=' * 42}\n\n"
+            f"{msg}\n\n"
+            f"Fix these issues before committing.\n"
+            f"See docs/glossary/markdown-glossary.md for routing rules.\n",
+            file=sys.stderr,
+        )
+        sys.exit(2)
 
-    # Check for stub markers in staged content
-    HAS_STUB=$(git -C "$PROJECT_DIR" show ":$src_file" 2>/dev/null | grep -inE '(STUB|# ---.*STUB|asyncio\.sleep.*#.*stub|async def.*stub)' | head -1 || true)
 
-    if [ -n "$HAS_STUB" ]; then
-      # Verify the file is mentioned in stubs.md
-      if ! grep -q "$src_file" "$STUBS_FILE" 2>/dev/null; then
-        ERRORS+=("$src_file contains stub markers but is not registered in docs/stubs.md")
-      fi
-    fi
-  done <<< "$STAGED_SRC"
-fi
+# ── Check 1: Phase completion without audit ──────────────────────
 
-# ─── Check 3: Glossary-triggered doc staleness ──────────────────
-# If src/ files are staged but glossary-triggered docs are not,
-# warn. Only block if contracts.md is stale (interface changes are
-# high-risk).
 
-STAGED_DOCS=$(git -C "$PROJECT_DIR" diff --cached --name-only 2>/dev/null | grep -E '^docs/' || true)
+def check_phase_audits(project_dir, errors):
+    """Every COMPLETE phase must have a docs/audits/phase-NN-audit.md."""
+    plan_dir = os.path.join(project_dir, "docs", "plan")
+    if not os.path.isdir(plan_dir):
+        return
 
-if [ -n "$STAGED_SRC" ]; then
-  # contracts.md is mandatory when src/ changes
-  if ! echo "$STAGED_DOCS" | grep -q 'docs/contracts.md' 2>/dev/null; then
-    # Only block if interface-related files changed
-    INTERFACE_CHANGES=$(echo "$STAGED_SRC" | grep -iE '(interface|protocol|schema|server\.py)' || true)
-    if [ -n "$INTERFACE_CHANGES" ]; then
-      ERRORS+=("Source interface files changed ($INTERFACE_CHANGES) but docs/contracts.md was not updated.")
-    fi
-  fi
-fi
+    for plan_file in glob.glob(os.path.join(plan_dir, "*.md")):
+        with open(plan_file) as f:
+            content = f.read()
 
-# ─── Verdict ─────────────────────────────────────────────────────
+        # Match "### Status: COMPLETE" or "#### Status: COMPLETE"
+        # to avoid false positives from prose like "Phase Completion Rules"
+        for match in re.finditer(
+            r"##\s+PHASE\s+(\d+)\b.*?###\s*Status:\s*COMPLETE",
+            content,
+            re.DOTALL | re.IGNORECASE,
+        ):
+            phase_num = match.group(1)
+            audit_file = os.path.join(
+                project_dir, "docs", "audits", f"phase-{phase_num}-audit.md"
+            )
+            if not os.path.exists(audit_file):
+                errors.append(
+                    f"Phase {phase_num} is marked COMPLETE in {os.path.basename(plan_file)} "
+                    f"but docs/audits/phase-{phase_num}-audit.md does not exist."
+                )
 
-if [ ${#ERRORS[@]} -gt 0 ]; then
-  {
-    echo ""
-    echo "=========================================="
-    echo "  COMMIT BLOCKED: Documentation Incomplete"
-    echo "=========================================="
-    echo ""
-    for err in "${ERRORS[@]}"; do
-      echo "  - $err"
-    done
-    echo ""
-    echo "Fix these issues before committing."
-    echo "See docs/glossary/markdown-glossary.md for routing rules."
-    echo ""
-  } >&2
-  exit 2
-fi
 
-exit 0
+# ── Check 2: Stub registry completeness ─────────────────────────
+
+STUB_PATTERNS = re.compile(
+    r"#\s*-{3,}\s*STUB|#\s*STUB:|STUB\s*=\s*True|"
+    r"raise\s+NotImplementedError|"
+    r"pass\s*#\s*stub|"
+    r"asyncio\.sleep.*#.*stub",
+    re.IGNORECASE,
+)
+
+
+def check_stub_registry(project_dir, staged_src, errors):
+    """Staged source files with stub markers must be in docs/stubs.md."""
+    stubs_file = os.path.join(project_dir, "docs", "stubs.md")
+    if not staged_src or not os.path.exists(stubs_file):
+        return
+
+    with open(stubs_file) as f:
+        stubs_content = f.read()
+
+    for src_file in staged_src:
+        try:
+            result = subprocess.run(
+                ["git", "show", f":{src_file}"],
+                cwd=project_dir,
+                capture_output=True,
+                text=True,
+                timeout=5,
+            )
+            if STUB_PATTERNS.search(result.stdout):
+                if src_file not in stubs_content:
+                    errors.append(
+                        f"{src_file} contains stub markers but is not "
+                        f"registered in docs/stubs.md"
+                    )
+        except (subprocess.TimeoutExpired, FileNotFoundError):
+            pass
+
+
+# ── Check 3: Interface doc staleness ─────────────────────────────
+
+INTERFACE_PATTERNS = re.compile(
+    r"interface|protocol|handler|route|endpoint|server|api",
+    re.IGNORECASE,
+)
+
+
+def check_interface_docs(project_dir, staged_src, errors):
+    """If interface-related source files changed, contracts.md must be staged."""
+    if not staged_src:
+        return
+
+    contracts = os.path.join(project_dir, "docs", "contracts.md")
+    if not os.path.exists(contracts):
+        return
+
+    # Check if contracts.md is already staged
+    try:
+        result = subprocess.run(
+            ["git", "diff", "--cached", "--name-only"],
+            cwd=project_dir,
+            capture_output=True,
+            text=True,
+            timeout=5,
+        )
+        if "docs/contracts.md" in result.stdout:
+            return  # Already staged, OK
+    except (subprocess.TimeoutExpired, FileNotFoundError):
+        return
+
+    interface_files = [f for f in staged_src if INTERFACE_PATTERNS.search(f)]
+    if interface_files:
+        files_str = ", ".join(interface_files[:3])
+        if len(interface_files) > 3:
+            files_str += f" (+{len(interface_files) - 3} more)"
+        errors.append(
+            f"Interface-related source files changed ({files_str}) "
+            f"but docs/contracts.md was not updated."
+        )
+
+
+# ── Helpers ──────────────────────────────────────────────────────
+
+# Directories that are NOT source code
+NON_SOURCE = {"docs", ".claude", ".github", ".git", "scripts", "node_modules"}
+
+
+def get_staged_source_files(project_dir):
+    """Return staged files that are source code (not docs/config/dotfiles)."""
+    try:
+        result = subprocess.run(
+            ["git", "diff", "--cached", "--name-only", "--diff-filter=d"],
+            cwd=project_dir,
+            capture_output=True,
+            text=True,
+            timeout=5,
+        )
+    except (subprocess.TimeoutExpired, FileNotFoundError):
+        return []
+
+    source_files = []
+    for f in result.stdout.strip().split("\n"):
+        if not f:
+            continue
+        top_dir = f.split("/")[0] if "/" in f else ""
+        if top_dir in NON_SOURCE:
+            continue
+        if f.startswith("."):
+            continue
+        source_files.append(f)
+
+    return source_files
+
+
+if __name__ == "__main__":
+    try:
+        main()
+    except Exception as e:
+        # On unexpected errors, allow the commit but warn
+        print(f"doc-check hook error: {e}", file=sys.stderr)
+    sys.exit(0)
