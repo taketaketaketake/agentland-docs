@@ -101,7 +101,7 @@ Before ANY of the following:
 - Marking a phase as COMPLETE
 - Claiming a phase is complete
 - Being asked to mark a phase complete
-- Updating `implementation-plan.md` to indicate phase completion
+- Updating `docs/plan/plan-template.md` to indicate phase completion
 
 Claude MUST:
 

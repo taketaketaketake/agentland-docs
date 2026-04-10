@@ -62,7 +62,7 @@ A trigger matches if:
 - OR the change implies the trigger (e.g., "added new table" implies "Database schema changed")
 
 Phase completion ALWAYS triggers:
-- `implementation-plan.md` (must be updated to mark phase done)
+- `docs/plan/plan-template.md` (must be updated to mark phase done)
 - `README.md` (if capabilities or getting-started changed)
 
 Build a list: `files_requiring_update`
@@ -79,13 +79,13 @@ Record for each file:
 - `status`: UPDATED | MISSING_UPDATE | FILE_NOT_FOUND
 - `evidence`: What was found or not found
 
-### Step 4: Evaluate implementation-plan.md
+### Step 4: Evaluate docs/plan/plan-template.md
 
 This file requires special verification:
 - The specified phase must be marked with a completion indicator (e.g., `[x]`, `COMPLETE`, `Done`)
 - The phase status must not be `in progress` or unmarked
 
-If `implementation-plan.md` does not reflect phase completion: `status = MISSING_UPDATE`
+If `docs/plan/plan-template.md` does not reflect phase completion: `status = MISSING_UPDATE`
 
 ### Step 5: Verify ADR Creation
 
@@ -262,7 +262,7 @@ Claude (automated phase audit)
 ## PASS Criteria
 
 All of the following must be true:
-- `implementation-plan.md` reflects the phase as complete
+- `docs/plan/plan-template.md` reflects the phase as complete
 - Every file whose Update Triggers matched has been modified
 - Modified files contain content consistent with the declared changes
 - A phase-specific ADR exists in `docs/decisions/`
@@ -276,7 +276,7 @@ All of the following must be true:
 ## FAIL Criteria
 
 Any of the following:
-- `implementation-plan.md` does not mark the phase complete
+- `docs/plan/plan-template.md` does not mark the phase complete
 - Validation script was not executed (for behavioral phases)
 - Any triggered file was not updated
 - Any triggered file does not exist
@@ -322,7 +322,7 @@ VERDICT: FAIL
 Required actions before marking Phase 1 complete:
 1. Update docs/models.md to document the directives table schema
 2. Update docs/architecture.md to reflect the new database layer
-3. Mark Phase 1 as complete in implementation-plan.md
+3. Mark Phase 1 as complete in docs/plan/plan-template.md
 4. Create ADR for Phase 1 following docs/decisions/adr-template.md
 ```
 
@@ -365,15 +365,15 @@ They MUST NOT be treated as implementation plans or authorization to write code:
 | `docs/decisions/*.md` (ADRs) | Decision justification | No |
 | `docs/glossary/*.md` | Routing & enforcement rules | No |
 
-**Only `implementation-plan.md` authorizes implementation work.**
+**Only `docs/plan/plan-template.md` authorizes implementation work.**
 
 If Claude attempts to proceed with code changes based on any of the above documents
-without an approved entry in `implementation-plan.md`, the audit MUST FAIL.
+without an approved entry in `docs/plan/plan-template.md`, the audit MUST FAIL.
 
 ### Detection During Audit
 
 When auditing a phase, verify:
-1. The phase has a corresponding entry in `implementation-plan.md`
+1. The phase has a corresponding entry in `docs/plan/plan-template.md`
 2. Claude did not treat stabilization docs as implicit planning authorization
 3. Any "planned" work in stabilization docs has a separate implementation plan entry
 

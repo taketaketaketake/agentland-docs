@@ -52,7 +52,7 @@ Inspect the following areas:
 
 | Area | What to Check |
 |------|---------------|
-| **Phase Status** | Read `implementation-plan.md`, identify completed/in-progress phases |
+| **Phase Status** | Read `docs/plan/plan-template.md`, identify completed/in-progress phases |
 | **Source Code** | Scan `src/` for modules, patterns, code quality |
 | **Database** | Check `alembic/versions/` for migration count and recency |
 | **Documentation** | Verify `docs/` files exist and are current |

@@ -103,7 +103,7 @@ Always reference these files when working in this repository:
 - **`docs/vision.md`**: Long-term intent and system philosophy
 - **`docs/architecture.md`**: Structural reality
 - **`docs/invariants.md`**: Non-negotiable constraints (especially §15 and §16)
-- **`implementation-plan.md`**: Phase tracking and status
+- **`docs/plan/plan-template.md`**: Phase tracking and status
 
 ### Governance Files
 - **`docs/glossary/markdown-glossary.md`**: Authoritative source for update triggers and documentation contracts
@@ -217,7 +217,7 @@ This repository values correctness over speed, and clarity over cleverness.
 1. Read `CLAUDE.md` first — it contains persistent context
 2. Check `docs/glossary/markdown-glossary.md` for file responsibilities
 3. Review `docs/invariants.md` for constraints
-4. Consult `implementation-plan.md` for current phase context
+4. Consult `docs/plan/plan-template.md` for current phase context
 5. Ask the user if still unclear
 
 ---

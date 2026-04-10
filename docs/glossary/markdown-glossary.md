@@ -63,7 +63,7 @@ Humans first, LLMs second.
 Infrequent. Updated when the repo's purpose materially changes.
 
 **Update Triggers**
-- A phase is marked complete in `implementation-plan.md`
+- A phase is marked complete in `docs/plan/plan-template.md`
 - The repo's stated purpose changes
 - New top-level directories are added
 - Getting started instructions become invalid
@@ -100,7 +100,7 @@ Rare, deliberate updates. This is a "constitution," not a scratchpad.
 
 ---
 
-## implementation-plan.md
+## docs/plan/plan-template.md
 
 **Purpose**
 Step-by-step execution plan for building the system.
@@ -680,7 +680,7 @@ This section defines the procedure an LLM must follow after completing an implem
 
 **Step 4: Update Phase-Tracking Files**
 - `README.md`: Update if the repo's capabilities or getting-started instructions changed.
-- `implementation-plan.md`: Mark the completed phase as done. Update status and any revised scope.
+- `docs/plan/plan-template.md`: Mark the completed phase as done. Update status and any revised scope.
 
 **Step 5: Do Not Edit Unmatched Files**
 - Files without matching triggers must remain unchanged.
@@ -690,7 +690,7 @@ This section defines the procedure an LLM must follow after completing an implem
 
 | Change Type                        | Files to Update                              |
 |------------------------------------|----------------------------------------------|
-| Phase completed                    | `implementation-plan.md`, `README.md`        |
+| Phase completed                    | `docs/plan/plan-template.md`, `README.md`        |
 | Database schema changed            | `docs/models.md`                             |
 | New infrastructure layer added     | `docs/architecture.md`                       |
 | New invariant introduced           | `docs/invariants.md`                         |

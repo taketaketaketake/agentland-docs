@@ -2,7 +2,7 @@
 
 > This document is NOT an implementation plan.
 > It does not authorize code changes or execution.
-> All implementation requires an approved entry in `implementation-plan.md`.
+> All implementation requires an approved entry in `docs/plan/plan-template.md`.
 
 This document is the **authoritative registry** of all stubbed components in the system.
 

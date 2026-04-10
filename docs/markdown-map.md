@@ -42,7 +42,7 @@
 |------|----------|------|-------------------|
 | **README.md** | Entry Point | Repository overview | |
 | **CLAUDE.md** | AI Instructions | Persistent context | |
-| **implementation-plan.md** | Planning | Phase tracking | |
+| **docs/plan/plan-template.md** | Planning | Phase tracking | |
 
 <!-- Add all your markdown files here -->
 

@@ -160,7 +160,7 @@ async function init(force = false, skipConfigure = false) {
     console.log('\nCustomize your docs by editing:');
     console.log('  1. CLAUDE.md');
     console.log('  2. docs/vision.md');
-    console.log('  3. implementation-plan.md');
+    console.log('  3. docs/plan/plan-template.md');
     console.log('');
     return;
   }
@@ -181,7 +181,7 @@ async function init(force = false, skipConfigure = false) {
     console.log('Key files to edit:');
     console.log('  1. CLAUDE.md');
     console.log('  2. docs/vision.md');
-    console.log('  3. implementation-plan.md');
+    console.log('  3. docs/plan/plan-template.md');
     console.log('');
   }
 }

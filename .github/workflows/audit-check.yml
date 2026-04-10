@@ -16,9 +16,9 @@ jobs:
         run: |
           echo "Checking phase audit compliance..."
 
-          # Extract completed phases from implementation-plan.md
+          # Extract completed phases from docs/plan/plan-template.md
           # Looks for patterns like "## PHASE N — ... — COMPLETE"
-          COMPLETED_PHASES=$(grep -oP '## PHASE \K\d+(?=.*COMPLETE)' implementation-plan.md | sort -n)
+          COMPLETED_PHASES=$(grep -oP '## PHASE \K\d+(?=.*COMPLETE)' docs/plan/plan-template.md | sort -n)
 
           MISSING=""
           for PHASE in $COMPLETED_PHASES; do
@@ -120,8 +120,8 @@ jobs:
 
           # Extract phase statuses
           # Pattern: "## PHASE N — ... — STATUS"
-          COMPLETE_PHASES=$(grep -oP '## PHASE \K\d+(?=.*COMPLETE)' implementation-plan.md | sort -n || echo "")
-          IN_PROGRESS_PHASES=$(grep -oP '## PHASE \K\d+(?=.*IN.PROGRESS)' implementation-plan.md | sort -n || echo "")
+          COMPLETE_PHASES=$(grep -oP '## PHASE \K\d+(?=.*COMPLETE)' docs/plan/plan-template.md | sort -n || echo "")
+          IN_PROGRESS_PHASES=$(grep -oP '## PHASE \K\d+(?=.*IN.PROGRESS)' docs/plan/plan-template.md | sort -n || echo "")
 
           # Check for phases marked both COMPLETE and IN_PROGRESS
           for PHASE in $COMPLETE_PHASES; do

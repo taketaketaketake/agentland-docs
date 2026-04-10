@@ -96,7 +96,7 @@ See [docs/markdown-map.md](docs/markdown-map.md) for the full relationship analy
 │
 ├── CLAUDE.md                   # AI assistant persistent context and rules
 ├── README.md                   # This file - repository overview
-├── implementation-plan.md      # Phase tracking and implementation roadmap
+├── docs/plan/plan-template.md      # Phase tracking and implementation roadmap
 │
 ├── docs/                       # Authoritative documentation templates
 │   ├── architecture.md         # System architecture specification
@@ -145,7 +145,7 @@ This copies all documentation templates into your current project directory. Use
 Then:
 1. Customize `CLAUDE.md` for your project
 2. Fill in `docs/vision.md` with your system intent
-3. Update `implementation-plan.md` with your phases
+3. Update `docs/plan/plan-template.md` with your phases
 
 ## Learn More
 
