@@ -27,8 +27,8 @@
                     ┌───────────────────────────┼──────────────────────────┐
                     │                           │                          │
         ┌───────────▼───────────┐   ┌───────────▼──────────┐   ┌──────────▼─────────┐
-        │     README.md         │   │   CLAUDE.md          │   │ implementation-    │
-        │                       │   │                      │   │ plan.md            │
+        │     README.md         │   │   CLAUDE.md          │   │ plan-template.md   │
+        │                       │   │                      │   │                    │
         │  - Entry point        │   │  - AI instructions   │   │                    │
         │  - Overview           │   │  - Phase protocol    │   │  - Phase tracking  │
         └───────────────────────┘   └──────────────────────┘   └────────────────────┘

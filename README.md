@@ -169,19 +169,40 @@ Each file in this repository is designed to become a reusable template for spec-
 
 ## Quick Start
 
+### 1. Install the templates
+
 ```bash
 npx spec-driven-docs init
 ```
 
-This copies all documentation templates into your current project directory. Use `--force` to overwrite existing files.
+This copies all documentation templates, hooks, and skills into your project. Use `--force` to overwrite existing files.
 
-Then:
-1. Customize `CLAUDE.md` for your project
-2. Fill in `docs/vision.md` with your system intent
-3. Update `docs/plan/plan-template.md` with your phases
+### 2. Tell the LLM about your project
+
+Open Claude Code (or your LLM of choice) in the project directory and prompt it to fill out the docs. For example:
+
+> "Read the documentation templates in this repo. Fill out CLAUDE.md, vision.md, and plan-template.md based on what this project does. Delete any docs that aren't relevant."
+
+The LLM reads your codebase, fills in the templates with project-specific content, and removes what doesn't apply.
+
+### 3. Delete what you don't need
+
+Not every project needs every file. A simple CLI tool doesn't need `artifacts.md` or `contracts.md`. A data pipeline might not need `stubs.md`. **Delete freely** — the glossary and hooks adapt to what's present.
+
+The only files that should always exist:
+- `CLAUDE.md` — LLM instructions for your project
+- `docs/glossary/markdown-glossary.md` — the routing table that drives enforcement
+- `docs/plan/plan-template.md` — phase tracking
+
+Everything else is opt-in.
+
+### 4. Work in phases
+
+From here, work normally. The hooks and skills enforce documentation stays in sync as you build:
+- Edit source code → hooks warn if docs need updating
+- Complete a phase → phase-audit skill verifies everything before marking done
+- Commit → pre-commit hook blocks if docs are incomplete
 
 ## Learn More
 
-See [docs/vision.md](docs/vision.md) for the system philosophy.
-
-See [docs/glossary/markdown-glossary.md](docs/glossary/markdown-glossary.md) for file-level contracts.
+See [docs/glossary/markdown-glossary.md](docs/glossary/markdown-glossary.md) for file-level contracts and the routing table that drives enforcement.

@@ -50,6 +50,8 @@ See `docs/invariants.md` for the formal constraint.
 - [ ] [Criterion 1]
 - [ ] [Criterion 2]
 - [ ] [Criterion 3]
+- [ ] All required validation scripts have been executed successfully
+- [ ] A phase audit has passed
 
 ### Status: NOT STARTED
 
@@ -70,6 +72,8 @@ See `docs/invariants.md` for the formal constraint.
 
 - [ ] [Criterion 1]
 - [ ] [Criterion 2]
+- [ ] All required validation scripts have been executed successfully
+- [ ] A phase audit has passed
 
 ### Status: NOT STARTED
 
