@@ -26,6 +26,22 @@ It is **not**:
 - [non-goal 2]
 - [non-goal 3]
 
+<!--
+EXAMPLE (delete when filling in):
+
+This repository implements a **multi-location restaurant order management system**.
+
+It is:
+- A backend API that handles orders from kiosks, mobile apps, and third-party delivery platforms
+- A real-time kitchen display system that routes orders to prep stations
+- A multi-tenant platform where each restaurant location operates independently
+
+It is **not**:
+- A point-of-sale (POS) system — we integrate with existing POS hardware
+- A delivery logistics platform — we hand off to DoorDash/Uber Eats APIs
+- A customer-facing mobile app — we provide the API that apps consume
+-->
+
 ---
 
 ## How to Think About the System
@@ -37,6 +53,19 @@ Use this mental model:
 - [Component] = [role]
 
 Never collapse these layers.
+
+<!--
+EXAMPLE (delete when filling in):
+
+- API Gateway = single entry point; authenticates requests, injects tenant context
+- Order Service = owns the order lifecycle from placement to completion
+- Kitchen Router = assigns order items to prep stations based on menu category and load
+- Inventory Tracker = decrements stock in real-time; blocks orders for out-of-stock items
+- Notification Hub = pushes status updates to customers via SMS/push/webhook
+
+Never collapse these layers. The Kitchen Router does not know about customers.
+The Order Service does not talk to prep stations directly.
+-->
 
 ---
 
@@ -52,6 +81,15 @@ Never collapse these layers.
    - [boundary rule 1]
    - [boundary rule 2]
    - [boundary rule 3]
+
+<!--
+EXAMPLE (delete when filling in):
+
+3. **Respect architectural boundaries**
+   - Orders are immutable after kitchen confirmation. Modifications create new orders.
+   - All third-party delivery API calls go through the Integration Service. No direct HTTP calls from other services.
+   - Inventory writes are event-sourced. Never UPDATE a stock row directly.
+-->
 
 4. **Prefer explicit structure over clever abstractions**
    - Boring, readable code is preferred.
