@@ -2,9 +2,9 @@ name: Phase Audit Check
 
 on:
   push:
-    branches: [main]
+    branches: [main, master]
   pull_request:
-    branches: [main]
+    branches: [main, master]
 
 jobs:
   check-audits:
@@ -87,7 +87,7 @@ jobs:
           CURRENT_INVARIANTS=$(grep -oP '^## \K\d+(?=\.)' docs/invariants.md | sort -n)
 
           # For PRs, compare against base branch
-          # For pushes to main, compare against parent commit
+          # For pushes, compare against parent commit
           if [ "${{ github.event_name }}" = "pull_request" ]; then
             git fetch origin ${{ github.base_ref }} --depth=1
             BASE_INVARIANTS=$(git show origin/${{ github.base_ref }}:docs/invariants.md 2>/dev/null | grep -oP '^## \K\d+(?=\.)' | sort -n || echo "")
@@ -131,9 +131,9 @@ jobs:
             fi
           done
 
-          # Check that completed phases are sequential (no gaps)
+          # Check that completed phases are sequential (no gaps), starting at Phase 0
           if [ -n "$COMPLETE_PHASES" ]; then
-            PREV=0
+            PREV=-1
             for PHASE in $COMPLETE_PHASES; do
               EXPECTED=$((PREV + 1))
               if [ "$PHASE" -ne "$EXPECTED" ]; then
