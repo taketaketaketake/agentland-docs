@@ -20,7 +20,7 @@ This copies all documentation templates, hooks, and skills into your project. Us
 
 Open Claude Code (or your LLM of choice) in the project directory and prompt it to fill out the docs. For example:
 
-> "Read the documentation templates in this repo. Fill out CLAUDE.md, vision.md, and plan-template.md based on what this project does. Delete any docs that aren't relevant."
+> "Read the documentation templates in this repo. Fill out CLAUDE.md and vision.md, and write the project plan in docs/plan/implementation-plan.md using docs/plan/plan-template.md as the structure. Do not edit plan-template.md. Delete any docs that aren't relevant."
 
 The LLM reads your codebase, fills in the templates with project-specific content, and removes what doesn't apply.
 
@@ -31,7 +31,8 @@ Not every project needs every file. A simple CLI tool doesn't need `artifacts.md
 The only files that should always exist:
 - `CLAUDE.md` — LLM instructions for your project
 - `docs/glossary/markdown-glossary.md` — the routing table that drives enforcement
-- `docs/plan/plan-template.md` — phase tracking
+- `docs/plan/implementation-plan.md` — the project's plan and phase tracking (created from the template by `init`)
+- `docs/plan/plan-template.md` — static reference template for plans; never edited
 
 Everything else is opt-in.
 
@@ -52,7 +53,8 @@ From here, work normally. The hooks and skills enforce documentation stays in sy
 - **contracts.md** — interface completeness tracking
 - **stubs.md** — stub registry
 - **artifacts.md** — artifact type registry
-- **plan-template.md** — phase tracking
+- **implementation-plan.md** — the project's live plan and phase tracking
+- **plan-template.md** — static reference template that plans follow (never edited)
 - **glossary.md** — term definitions
 - **markdown-glossary.md** — the central routing table that drives everything
 - **adr-template.md** — architecture decision record template

@@ -236,6 +236,18 @@ async function init(force = false, skipConfigure = false) {
     copyRecursive(srcPath, destPath, force);
   }
 
+  // Create the project's plan from the static template (never overwritten)
+  const planTemplate = path.join(process.cwd(), 'docs', 'plan', 'plan-template.md');
+  const planFile = path.join(process.cwd(), 'docs', 'plan', 'implementation-plan.md');
+  if (fs.existsSync(planTemplate) && !fs.existsSync(planFile)) {
+    const template = fs.readFileSync(planTemplate, 'utf8');
+    const plan = template
+      .replace('# Implementation Plan Template', '# Implementation Plan')
+      .replace(/<!--\s*STATIC TEMPLATE[\s\S]*?-->\s*/, '');
+    fs.writeFileSync(planFile, plan);
+    console.log(`  CREATE: ${path.relative(process.cwd(), planFile)} (from plan-template.md)`);
+  }
+
   // Make hook scripts executable
   const hooksDir = path.join(process.cwd(), '.claude', 'hooks');
   if (fs.existsSync(hooksDir)) {
@@ -255,7 +267,7 @@ async function init(force = false, skipConfigure = false) {
     console.log('\nCustomize your docs by editing:');
     console.log('  1. CLAUDE.md');
     console.log('  2. docs/vision.md');
-    console.log('  3. docs/plan/plan-template.md');
+    console.log('  3. docs/plan/implementation-plan.md (your plan; leave plan-template.md unchanged)');
     console.log('');
     return;
   }
@@ -276,7 +288,7 @@ async function init(force = false, skipConfigure = false) {
     console.log('Key files to edit:');
     console.log('  1. CLAUDE.md');
     console.log('  2. docs/vision.md');
-    console.log('  3. docs/plan/plan-template.md');
+    console.log('  3. docs/plan/implementation-plan.md (your plan; leave plan-template.md unchanged)');
     console.log('');
   }
 }

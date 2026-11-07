@@ -107,9 +107,14 @@ EXAMPLE (delete when filling in):
 ## Plan File Rule
 
 When writing or updating a plan (whether in plan mode or otherwise),
-you MUST update `docs/plan/plan-template.md` in the SAME action.
-The plan mode file is scratch space. `docs/plan/plan-template.md` is
+you MUST update `docs/plan/implementation-plan.md` in the SAME action.
+The plan mode file is scratch space. `docs/plan/implementation-plan.md` is
 the source of truth. Never treat one as done without updating the other.
+
+`docs/plan/plan-template.md` is a static reference template that plans
+follow. It never changes. Never write project content into it. If
+`docs/plan/implementation-plan.md` does not exist, create it by copying
+the template's structure.
 
 ---
 
@@ -139,7 +144,7 @@ Before ANY of the following:
 - Marking a phase as COMPLETE
 - Claiming a phase is complete
 - Being asked to mark a phase complete
-- Updating `docs/plan/plan-template.md` to indicate phase completion
+- Updating `docs/plan/implementation-plan.md` to indicate phase completion
 
 Claude MUST:
 

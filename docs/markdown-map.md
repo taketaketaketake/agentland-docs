@@ -27,8 +27,8 @@
                     ┌───────────────────────────┼──────────────────────────┐
                     │                           │                          │
         ┌───────────▼───────────┐   ┌───────────▼──────────┐   ┌──────────▼─────────┐
-        │     README.md         │   │   CLAUDE.md          │   │ plan-template.md   │
-        │                       │   │                      │   │                    │
+        │     README.md         │   │   CLAUDE.md          │   │ implementation-    │
+        │                       │   │                      │   │ plan.md            │
         │  - Entry point        │   │  - AI instructions   │   │                    │
         │  - Overview           │   │  - Phase protocol    │   │  - Phase tracking  │
         └───────────────────────┘   └──────────────────────┘   └────────────────────┘
@@ -42,7 +42,8 @@
 |------|----------|------|-------------------|
 | **README.md** | Entry Point | Repository overview | |
 | **CLAUDE.md** | AI Instructions | Persistent context | |
-| **docs/plan/plan-template.md** | Planning | Phase tracking | |
+| **docs/plan/implementation-plan.md** | Planning | Live plan and phase tracking | Follows plan-template.md |
+| **docs/plan/plan-template.md** | Planning | Static reference template (never edited) | |
 
 <!-- Add all your markdown files here -->
 
