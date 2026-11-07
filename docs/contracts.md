@@ -2,7 +2,7 @@
 
 > This document is NOT an implementation plan.
 > It does not authorize code changes or execution.
-> All implementation requires an approved entry in `docs/plan/plan-template.md`.
+> All implementation requires an approved entry in `docs/plan/implementation-plan.md`.
 
 This document defines the **completeness status** of every interface in the system.
 
